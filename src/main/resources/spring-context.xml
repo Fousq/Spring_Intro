@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="dataInitializeBeanPostProcessor" class="kz.zhanbolat.spring.processor.DataInitializeBeanPostProcessor">
+        <constructor-arg>
+            <map key-type="string" value-type="string">
+                <entry key="dataStorage" value="storage/all_data.properties"/>
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <bean id="userService" class="kz.zhanbolat.spring.service.impl.UserServiceImpl">
+    </bean>
+
+    <bean id="ticketService" class="kz.zhanbolat.spring.service.impl.TicketServiceImpl">
+    </bean>
+
+    <bean id="eventService" class="kz.zhanbolat.spring.service.impl.EventServiceImpl">
+    </bean>
+
+    <bean id="bookingFacade" class="kz.zhanbolat.spring.service.impl.BookingFacadeImpl">
+        <property name="userService" ref="userService"/>
+        <property name="ticketService" ref="ticketService"/>
+        <property name="eventService" ref="eventService"/>
+    </bean>
+
+    <bean id="userMapper" class="kz.zhanbolat.spring.mapper.UserMapper">
+    </bean>
+
+    <bean id="eventMapper" class="kz.zhanbolat.spring.mapper.EventMapper">
+    </bean>
+
+    <bean id="ticketMapper" class="kz.zhanbolat.spring.mapper.TicketMapper">
+    </bean>
+
+    <bean id="dataStorage" class="kz.zhanbolat.spring.storage.DataStorage">
+        <property name="userMapper" ref="userMapper"/>
+        <property name="eventMapper" ref="eventMapper"/>
+        <property name="ticketMapper" ref="ticketMapper"/>
+    </bean>
+
+    <bean id="userRepository" class="kz.zhanbolat.spring.repository.impl.UserRepositoryImpl">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="eventRepository" class="kz.zhanbolat.spring.repository.impl.EventRepositoryImpl">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="ticketRepository" class="kz.zhanbolat.spring.repository.impl.TicketRepositoryImpl">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+</beans>
