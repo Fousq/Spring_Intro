@@ -2,16 +2,13 @@ package kz.zhanbolat.spring.processor;
 
 import kz.zhanbolat.spring.storage.DataStorage;
 import kz.zhanbolat.spring.storage.Storage;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.annotation.AnnotationUtils;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,7 +18,7 @@ import java.util.Objects;
 import java.util.Properties;
 
 public class DataInitializeBeanPostProcessor implements BeanPostProcessor {
-    private static final Logger logger = LogManager.getLogger(DataInitializeBeanPostProcessor.class);
+    private static final Logger logger = LoggerFactory.getLogger(DataInitializeBeanPostProcessor.class);
     private static final String DATA_STORAGE_PLACEHOLDER_NAME = "dataStorage";
     private Map<String, String> filePath;
 

@@ -5,15 +5,15 @@ import kz.zhanbolat.spring.entity.Ticket;
 import kz.zhanbolat.spring.entity.User;
 import kz.zhanbolat.spring.exception.MappingException;
 import kz.zhanbolat.spring.mapper.Mapper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Storage
 public class DataStorage {
-    private static final Logger logger = LogManager.getLogger(DataStorage.class);
+    private static final Logger logger = LoggerFactory.getLogger(DataStorage.class);
     private Mapper<User> userMapper;
     private Mapper<Event> eventMapper;
     private Mapper<Ticket> ticketMapper;
