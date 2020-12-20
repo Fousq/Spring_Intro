@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         https://www.springframework.org/schema/beans/spring-beans.xsd">
     <bean id="dataInitializeBeanPostProcessor" class="kz.zhanbolat.spring.processor.DataInitializeBeanPostProcessor">
@@ -20,22 +21,22 @@
     <bean id="ticketMapper" class="kz.zhanbolat.spring.mapper.TicketMapper">
     </bean>
 
-    <bean id="dataStorage" class="kz.zhanbolat.spring.storage.DataStorage">
-        <property name="userMapper" ref="userMapper"/>
-        <property name="eventMapper" ref="eventMapper"/>
-        <property name="ticketMapper" ref="ticketMapper"/>
+    <bean id="dataStorage" class="kz.zhanbolat.spring.storage.DataStorage"
+        p:userMapper-ref="userMapper"
+        p:eventMapper-ref="eventMapper"
+        p:ticketMapper-ref="ticketMapper">
     </bean>
 
-    <bean id="userRepository" class="kz.zhanbolat.spring.repository.impl.UserRepositoryImpl">
-        <property name="dataStorage" ref="dataStorage"/>
+    <bean id="userRepository" class="kz.zhanbolat.spring.repository.impl.UserRepositoryImpl"
+        p:dataStorage-ref="dataStorage">
     </bean>
 
-    <bean id="eventRepository" class="kz.zhanbolat.spring.repository.impl.EventRepositoryImpl">
-        <property name="dataStorage" ref="dataStorage"/>
+    <bean id="eventRepository" class="kz.zhanbolat.spring.repository.impl.EventRepositoryImpl"
+          p:dataStorage-ref="dataStorage">
     </bean>
 
-    <bean id="ticketRepository" class="kz.zhanbolat.spring.repository.impl.TicketRepositoryImpl">
-        <property name="dataStorage" ref="dataStorage"/>
+    <bean id="ticketRepository" class="kz.zhanbolat.spring.repository.impl.TicketRepositoryImpl"
+          p:dataStorage-ref="dataStorage">
     </bean>
 
     <bean id="userService" class="kz.zhanbolat.spring.service.impl.UserServiceImpl" autowire="byType">
