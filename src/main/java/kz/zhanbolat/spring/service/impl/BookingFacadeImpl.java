@@ -44,18 +44,13 @@ public class BookingFacadeImpl implements BookingFacade {
     }
 
     @Override
-    public List<Ticket> getUnbookedTicketsForEvent(int eventId) {
-        return ticketService.getUnbookedTicketsForEvent(eventId);
-    }
-
-    @Override
-    public List<Event> getEvents() {
-        return eventService.getEvents();
-    }
-
-    @Override
     public Optional<Event> getEvent(int id) {
         return eventService.getEvent(id);
+    }
+
+    @Override
+    public Optional<Ticket> getTicket(int id) {
+        return ticketService.getTicket(id);
     }
 
     @Override
@@ -70,6 +65,8 @@ public class BookingFacadeImpl implements BookingFacade {
         }
         List<Ticket> unbookedTickets = ticketService.getUnbookedTicketsForEvent(ticket.getEventId());
         if (unbookedTickets.stream().anyMatch(unbookedTicket -> unbookedTicket.getId() == ticket.getId())) {
+            ticket.setUserId(userId);
+            ticket.setBooked(true);
             return ticketService.updateTicket(ticket);
         }
         return false;
@@ -92,9 +89,11 @@ public class BookingFacadeImpl implements BookingFacade {
             }
         }
         user = userService.getUserByTicketId(ticket.getId());
-        if (user.get().getId() != userId) {
-            return false;
+        if (user.isPresent() && user.get().getId() == userId) {
+            ticket.setUserId(0);
+            ticket.setBooked(false);
+            return ticketService.updateTicket(ticket);
         }
-        return ticketService.updateTicket(ticket);
+        return false;
     }
 }

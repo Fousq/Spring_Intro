@@ -3,13 +3,12 @@ package kz.zhanbolat.spring.service.impl;
 import kz.zhanbolat.spring.entity.Ticket;
 import kz.zhanbolat.spring.repository.TicketRepository;
 import kz.zhanbolat.spring.service.TicketService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class TicketServiceImpl implements TicketService {
-    @Autowired
     private TicketRepository ticketRepository;
 
     @Override
@@ -34,5 +33,17 @@ public class TicketServiceImpl implements TicketService {
             throw new IllegalArgumentException("The ticket object cannot be null.");
         }
         return ticketRepository.updateTicket(ticket);
+    }
+
+    @Override
+    public Optional<Ticket> getTicket(int id) {
+        if (id < 1) {
+            throw new IllegalArgumentException("The id cannot be below 1.");
+        }
+        return ticketRepository.getTicket(id);
+    }
+
+    public void setTicketRepository(TicketRepository ticketRepository) {
+        this.ticketRepository = ticketRepository;
     }
 }

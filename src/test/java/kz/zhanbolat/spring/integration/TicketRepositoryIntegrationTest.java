@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -69,5 +70,19 @@ public class TicketRepositoryIntegrationTest {
         final boolean isUpdated = ticketRepository.updateTicket(Ticket.builder().setId(100).setEventId(1).build());
 
         assertFalse(isUpdated);
+    }
+
+    @Test
+    public void shouldReturnTicket_whenPassExistingTicketId() {
+        Optional<Ticket> ticket = ticketRepository.getTicket(1);
+
+        assertTrue(ticket.isPresent());
+    }
+
+    @Test
+    public void shouldReturnEmpty_whenPassNotExistingTicketId() {
+        Optional<Ticket> ticket = ticketRepository.getTicket(100);
+
+        assertFalse(ticket.isPresent());
     }
 }

@@ -6,6 +6,7 @@ import kz.zhanbolat.spring.storage.DataStorage;
 import kz.zhanbolat.spring.storage.EntityNamespace;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class TicketRepositoryImpl implements TicketRepository {
@@ -45,5 +46,16 @@ public class TicketRepositoryImpl implements TicketRepository {
             }
         }
         return false;
+    }
+
+    @Override
+    public Optional<Ticket> getTicket(int id) {
+        List<Object> tickets = dataStorage.get(EntityNamespace.TICKET.getNamespace());
+        for (Object ticket : tickets) {
+            if (((Ticket) ticket).getId() == id) {
+                return Optional.of((Ticket) ticket);
+            }
+        }
+        return Optional.empty();
     }
 }
