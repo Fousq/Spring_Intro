@@ -1,29 +1,34 @@
-# Spring_Intro
+# Spring_Web
 
 ## Sources
 
-* Core Technologies - https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#spring-core
-* Inversion of Control and Dependency Injection - https://martinfowler.com/articles/injection.html
-* Testing - https://docs.spring.io/spring/docs/current/spring-framework-reference/testing.html#testing
-* Logging -  https://docs.spring.io/spring/docs/5.0.0.RC3/spring-framework-reference/overview.html#overview-logging
-* Logging tutorial - https://www.tutorialspoint.com/spring/logging_with_log4j.htm
+* Spring Web MVC - https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#mvc
+* Marshalling XML - https://docs.spring.io/spring/docs/current/spring-framework-reference/data-access.html#oxm
+* Exception handling in Spring MVC - https://www.baeldung.com/exception-handling-for-rest-with-spring, https://spring.io/blog/2013/11/01/exception-handling-in-spring-mvc
+* Spring Integration Testing - https://docs.spring.io/spring/docs/current/spring-framework-reference/testing.html#testing
 
 ## Main Task
 
-Create Spring based module, which handles event tickets booking.
+1. Transform project from Spring Introduction module into web application, configure dispatcher servlet. (0.5 point)
+2. Implement annotation-based controllers that will delegate to BookingFacade methods. For methods, that accept Entity, just send the list of parameters from the client and assemble the entity in controller, no need in automatic conversion of request payload to java object. (0.5 point)
+3. For methods, that should return single entity or entity list result (e.g. getUsersByName), implement simple thymeleaf templates for displaying results. No sophisticated markup required, just the fact that you know how to implement the chain:
+ModelAndView, Resolver, ThymeleafTemplate, Html page in the browser. (1 point)
+4. For the following facade method:
+* List<Ticket>getBookedTickets(User user int pageSize, int pageNum);
+* Implement alternative controller, which will be mapped on header value "accept=application/pdf" and return PDF version of booked tickets list. (0.5 point)
+5. Implement batch creation of ticket bookings from XML file. Source file example:
+<pre>
+&lt;tickets&gt;
 
-Based on attached source code model:
+   &lt;ticket user="..." event="..." category="..." place="..."/&gt;
 
-1. Implement three service classes:
-    * UserService
-    * EventService
-    * TicketService
-    
-which should contain user, event and booking related functionality accordingly. Create implementation of BookingFacade interface which should delegate method calls to services mentioned above. (0.5 point)
-2. Configure spring application context based on xml config file. (0.5 point)
-3. Implement DAO objects for each of the domain model entities (User, Event, Ticket). They should store in and retrieve data from a common in-memory storage - java map. Each entity should be stored under separate namespace, so you could list particular entity types. (0.5 point) Example for ticket - map entry {"ticket:<ticketId>" : {<Ticket object>}}.  E.g. {"ticket:12345" : {"id" : 12345, "place" :23, ......}}
-4. Storage should be implemented as a separate spring bean. Implement ability to initialize storage with some prepared data from file during the application start (use spring bean post-processing features). Path to the concrete file should be set using property placeholder and external property file. (1 point)
-5. DAO with storage bean should be inserted into services beans using autowiring. Services beans should be injected into facade using constructor-based injections. Rest of the injections should be done in a setter-based way. (1 point)
-6. Cover code with unit tests. (0.5 point)
-7. Code should contain proper logging. (0.5 point)
-8. Create several integration tests that instantiate the Application Context directly, lookup facade bean and perform some real-life scenario (e.g. create user, then create event, then book ticket for this event for the user, then cancel it). (0.5 point) 
+   &lt;ticket user="..." event="..." category="..." place="..."/&gt;
+
+   &lt;ticket user="..." event="..." category="..." place="..."/&gt;
+
+&lt;/tickets&gt;
+</pre>
+Add a method public void preloadTickets() to facade that will load this file from some predefined place (or from a location specified in parameter), unmarshal ticket objects using Spring OXM capabilities and update the storage. The whole batch should be performed in a single transaction, using programmatic transaction management. (1 point)
+6. Implement custom HandlerExceptionResolver, which in case of controller exception just send simple text response to the client with brief description of the error. (0.5 point)
+7. Unit tests, logging, javadocs. (0.5 point)
+8. Implement integration tests for Booking service controllers using  MockMVC framework. (0.5 point) 
