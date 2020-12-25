@@ -1,4 +1,4 @@
-package kz.zhanbolat.spring.controller;
+package kz.zhanbolat.spring.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -26,7 +26,7 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public SpringResourceTemplateResolver templateResolver(){
+    public SpringResourceTemplateResolver templateResolver() {
         // SpringResourceTemplateResolver automatically integrates with Spring's own
         // resource resolution infrastructure, which is highly recommended.
         SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();

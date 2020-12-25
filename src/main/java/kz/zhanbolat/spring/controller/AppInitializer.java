@@ -1,5 +1,6 @@
 package kz.zhanbolat.spring.controller;
 
+import kz.zhanbolat.spring.config.WebConfig;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
