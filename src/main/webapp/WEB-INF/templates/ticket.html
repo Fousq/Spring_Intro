@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Ticket</title>
+</head>
+<body>
+    <div>
+        <h1>Ticket:</h1><br>
+        <h2>Id: <span th:text="${ticket.id}"></span></h2>
+        <div th:if="${ticket.userId} != 0">
+            <h2 >User id: <span th:text="${ticket.userId}"></span></h2><br>
+        </div>
+        <h2>Event id: <span th:text="${ticket.eventId}"></span></h2><br>
+        <h2>Booked: <span th:text="${ticket.isBooked} ? 'Yes' : 'No'"></span></h2><br>
+    </div>
+</body>
+</html>

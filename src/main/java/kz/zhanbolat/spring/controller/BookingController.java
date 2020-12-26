@@ -1,6 +1,5 @@
 package kz.zhanbolat.spring.controller;
 
-import kz.zhanbolat.spring.controller.util.AttributeWrapper;
 import kz.zhanbolat.spring.entity.Event;
 import kz.zhanbolat.spring.entity.Ticket;
 import kz.zhanbolat.spring.entity.User;
@@ -9,13 +8,7 @@ import kz.zhanbolat.spring.service.BookingFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @Controller
@@ -23,8 +16,6 @@ import java.util.Optional;
 public class BookingController {
     @Autowired
     private BookingFacade bookingFacade;
-    @Autowired
-    private AttributeWrapper attributeWrapper;
 
     // index page
     @GetMapping
@@ -48,82 +39,113 @@ public class BookingController {
     }
 
     @PostMapping("/user/create")
-    public String createUser(Model model) {
-        Integer userId = attributeWrapper.getInteger(model, "userId", "User id cannot be null.");
-        String username = attributeWrapper.getString(model, "username", "Username cannot be null or empty.");
+    public String createUser(@RequestAttribute Integer userId, @RequestAttribute String username, Model model) {
         boolean isCreated = bookingFacade.createUser(new User(userId, username));
         if (!isCreated) {
-            return "redirect:/user/create";
+            model.addAttribute("errorMsg",
+                    "Cannot create user with id - " + userId + ", username - " + username);
+            return "forward:/user/create";
         }
-        return "redirect:/user";
+        return "forward:/user/" + userId;
     }
 
     @PostMapping("/event/create")
-    public String createEvent(Model model) {
-        Integer eventId = attributeWrapper.getInteger(model, "eventId", "Event id cannot be null.");
-        String eventName = attributeWrapper.getString(model, "eventName", "Event name cannot be null or empty.");
+    public String createEvent(@RequestAttribute Integer eventId, @RequestAttribute String eventName, Model model) {
         boolean isCreated = bookingFacade.createEvent(new Event(eventId, eventName));
         if (!isCreated) {
-            return "redirect:/event/create";
+            model.addAttribute("errorMsg",
+                    "Cannot create event with id - " + eventId + ", name - " + eventName);
+            return "forward:/event/create";
         }
-        return "redirect:/event";
+        return "forward:/event/" + eventId;
     }
 
     @PostMapping("/ticket/create")
-    public String createTicket(Model model) {
-        Integer ticketId = attributeWrapper.getInteger(model, "ticketId", "Ticket id cannot be null.");
-        Integer eventId = attributeWrapper.getInteger(model, "eventId", "Event id cannot be null");
+    public String createTicket(@RequestAttribute Integer ticketId, @RequestAttribute Integer eventId, Model model) {
         boolean isCreated = bookingFacade.createTicket(Ticket.builder().setId(ticketId).setEventId(eventId).build());
         if (!isCreated) {
-            return "redirect:/ticket/create";
+            model.addAttribute("errorMsg",
+                    "Cannot create ticket with id - " + ticketId + ", event id - " + eventId);
+            return "forward:/ticket/create";
         }
-        return "redirect:/ticket";
+        return "forward:/ticket/" + ticketId;
     }
 
-    @GetMapping("/user")
-    public ModelAndView getUser(Model model) {
-        Integer userId = attributeWrapper.getInteger(model, "userId", "User id cannot be null.");
+    @GetMapping("/user/{userId}")
+    public String getUser(@PathVariable("userId") Integer userId, Model model) {
         final Optional<User> user = bookingFacade.getUser(userId);
         if (!user.isPresent()) {
             throw new EntityNotFoundException("The user cannot be found.");
         }
-        Map<String, Object> modelMap = new HashMap<>();
-        modelMap.put("user", user.get());
-        return new ModelAndView("user", modelMap);
+        model.addAttribute("user", user.get());
+        return "user";
     }
 
-    @GetMapping("/event")
-    public ModelAndView getEvent(Model model) {
-        Integer eventId = attributeWrapper.getInteger(model, "eventId", "Event id cannot be null.");
+    @GetMapping("/event/{eventId}")
+    public String getEvent(@PathVariable("eventId") Integer eventId, Model model) {
         final Optional<Event> event = bookingFacade.getEvent(eventId);
         if (!event.isPresent()) {
             throw new EntityNotFoundException("The event cannot be found.");
         }
-        Map<String, Object> modelMap = new HashMap<>();
-        modelMap.put("event", event.get());
-        return new ModelAndView("event", modelMap);
+        model.addAttribute("event", event.get());
+        return "event";
     }
 
-    @GetMapping("/ticket")
-    public ModelAndView getTicket(Model model) {
-        Integer ticketId = attributeWrapper.getInteger(model, "ticketId", "Ticket id cannot be null.");
+    @GetMapping("/ticket/{ticketId}")
+    public String getTicket(@PathVariable("ticketId") Integer ticketId, Model model) {
         final Optional<Ticket> ticket = bookingFacade.getTicket(ticketId);
         if (!ticket.isPresent()) {
             throw new EntityNotFoundException("The ticket cannot be found.");
         }
-        Map<String, Object> modelMap = new HashMap<>();
-        modelMap.put("ticket", ticket.get());
-        return new ModelAndView("ticket", modelMap);
+        model.addAttribute("ticket", ticket.get());
+        return "ticket";
+    }
+
+    @GetMapping("/book")
+    public String bookTicketPage() {
+        return "bookTicket";
     }
 
     @PostMapping("/book")
-    public String bookTicket(Model model) {
+    public String bookTicket(@RequestAttribute Integer userId, @RequestAttribute Integer ticketId,
+                             @RequestAttribute Integer eventId, Model model) {
+        final boolean isBooked = bookingFacade.bookTicket(userId, Ticket.builder().setId(ticketId).setEventId(eventId).build());
+        if (!isBooked) {
+            model.addAttribute("errorMsg",
+                    "Ticket cannot be booked with id - " + ticketId + ", event id - " + eventId
+                            + " by user with id - " + userId);
+            return "forward:/book";
+        }
+        model.addAttribute("successMsg", "Booking of ticket with id - " + ticketId
+                + ", event id - " + eventId + " has been performed successfully for user with id - " + userId);
+        return "success";
+    }
 
-        return "";
+    @GetMapping("/cancel")
+    public String cancelBookingPage() {
+        return "cancelBooking";
     }
 
     @PostMapping("/cancel")
-    public String cancelBooking(Model model) {
+    public String cancelBooking(@RequestAttribute Integer userId, @RequestAttribute Integer ticketId,
+                                @RequestAttribute Integer eventId, Model model) {
+        final boolean isCanceled = bookingFacade.cancelBooking(userId,
+                Ticket.builder().setId(ticketId).setEventId(eventId).setUserId(userId).build());
+        if (!isCanceled) {
+            model.addAttribute("errorMsg",
+                    "Booking of ticket cannot be canceled with id - " + ticketId + ", event id - " + eventId
+                            + " by user with id - " + userId);
+            return "forward:/cancel";
+        }
+        model.addAttribute("successMsg", "Canceling of ticket booking with id - " + ticketId
+                + ", event id - " + eventId + " has been performed successfully for user with id - " + userId);
+        return "success";
+    }
+
+    @GetMapping("/ticket/list/booked/{userId}")
+    public Object bookedTickets(@PathVariable("userId") Integer userId, @RequestParam("pageSize") Integer pageSize,
+                                @RequestParam("pageNum") Integer pageNum) {
+
         return "";
     }
 }
