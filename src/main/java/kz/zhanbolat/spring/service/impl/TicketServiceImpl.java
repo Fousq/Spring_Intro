@@ -43,6 +43,14 @@ public class TicketServiceImpl implements TicketService {
         return ticketRepository.getTicket(id);
     }
 
+    @Override
+    public List<Ticket> getBookedTicketsByUserId(int userId) {
+        if (userId < 1) {
+            throw new IllegalArgumentException("The user id cannot be below 1.");
+        }
+        return ticketRepository.getBookedTicketsByUserId(userId);
+    }
+
     public void setTicketRepository(TicketRepository ticketRepository) {
         this.ticketRepository = ticketRepository;
     }

@@ -58,4 +58,13 @@ public class TicketRepositoryImpl implements TicketRepository {
         }
         return Optional.empty();
     }
+
+    @Override
+    public List<Ticket> getBookedTicketsByUserId(int userId) {
+        return dataStorage.get(EntityNamespace.TICKET.getNamespace())
+                .stream()
+                .map(ticket -> (Ticket) ticket)
+                .filter(ticket -> ticket.isBooked() && ticket.getUserId() == userId)
+                .collect(Collectors.toList());
+    }
 }

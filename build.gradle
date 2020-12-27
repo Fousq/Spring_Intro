@@ -24,6 +24,9 @@ sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
 dependencies {
+    // https://mvnrepository.com/artifact/org.jboss/jboss-vfs
+    compile group: 'org.jboss', name: 'jboss-vfs', version: '3.2.15.Final'
+
     // https://mvnrepository.com/artifact/org.springframework/spring-core
     implementation ('org.springframework:spring-core:5.3.2') {
         exclude group: 'commons-logging', module: 'commons-logging'
@@ -40,6 +43,8 @@ dependencies {
     implementation('org.springframework:spring-webmvc:5.3.2') {
         exclude group: 'commons-logging', module: 'commons-logging'
     }
+    // https://mvnrepository.com/artifact/com.lowagie.text/com.springsource.com.lowagie.text
+    implementation group: 'com.lowagie.text', name: 'com.springsource.com.lowagie.text', version: '2.0.8'
     // https://mvnrepository.com/artifact/org.thymeleaf/thymeleaf
     implementation group: 'org.thymeleaf', name: 'thymeleaf', version: '3.0.11.RELEASE'
     // https://mvnrepository.com/artifact/org.thymeleaf/thymeleaf-spring5

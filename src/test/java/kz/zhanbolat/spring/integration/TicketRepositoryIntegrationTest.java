@@ -7,6 +7,7 @@ import kz.zhanbolat.spring.storage.DataStorage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
@@ -84,5 +85,18 @@ public class TicketRepositoryIntegrationTest {
         Optional<Ticket> ticket = ticketRepository.getTicket(100);
 
         assertFalse(ticket.isPresent());
+    }
+
+    @Test
+    public void shouldReturnList_givenUserId_whenGetBookedTickets() {
+        final List<Ticket> tickets = ticketRepository.getBookedTicketsByUserId(1);
+
+        assertEquals(1, tickets.size());
+    }
+
+    public void shouldReturnEmptyList_whenGetBookedTickets() {
+        final List<Ticket> tickets = ticketRepository.getBookedTicketsByUserId(2);
+
+        assertEquals(Collections.emptyList(), tickets);
     }
 }

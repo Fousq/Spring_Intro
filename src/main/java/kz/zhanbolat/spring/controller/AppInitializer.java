@@ -1,5 +1,6 @@
 package kz.zhanbolat.spring.controller;
 
+import kz.zhanbolat.spring.config.ServiceConfig;
 import kz.zhanbolat.spring.config.WebConfig;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
@@ -13,7 +14,7 @@ public class AppInitializer implements WebApplicationInitializer {
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
         AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
-        context.register(WebConfig.class);
+        context.register(WebConfig.class, ServiceConfig.class);
 
         ServletRegistration.Dynamic appServlet = servletContext.addServlet("dispatcher", new DispatcherServlet(context));
         appServlet.setLoadOnStartup(1);

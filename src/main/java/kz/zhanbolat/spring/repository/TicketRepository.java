@@ -10,4 +10,5 @@ public interface TicketRepository {
     List<Ticket> getUnbookedTicketsForEvent(int eventId);
     boolean updateTicket(Ticket ticket);
     Optional<Ticket> getTicket(int id);
+    List<Ticket> getBookedTicketsByUserId(int userId);
 }

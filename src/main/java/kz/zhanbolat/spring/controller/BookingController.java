@@ -9,6 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -142,10 +147,15 @@ public class BookingController {
         return "success";
     }
 
-    @GetMapping("/ticket/list/booked/{userId}")
-    public Object bookedTickets(@PathVariable("userId") Integer userId, @RequestParam("pageSize") Integer pageSize,
-                                @RequestParam("pageNum") Integer pageNum) {
+    @GetMapping(value = "/ticket/list/booked/{userId}", produces = "application/pdf")
+    public ModelAndView bookedTickets(@PathVariable("userId") Integer userId, @RequestParam(value = "pageSize", defaultValue = "400") Integer pageSize,
+                                      @RequestParam(value = "pageNum", defaultValue = "10") Integer pageNum) {
+        Map<String, Object> modelMap = new HashMap<>();
 
-        return "";
+        modelMap.put("tickets", bookingFacade.getBookedTickets(new User(userId), pageSize, pageNum));
+        modelMap.put("pageSize", pageSize);
+        modelMap.put("pageNum", pageNum);
+
+        return new ModelAndView("pdfView", modelMap);
     }
 }
