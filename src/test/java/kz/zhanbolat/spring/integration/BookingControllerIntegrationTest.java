@@ -1,6 +1,6 @@
 package kz.zhanbolat.spring.integration;
 
-import kz.zhanbolat.spring.config.ServiceConfig;
+import kz.zhanbolat.spring.TestConfig;
 import kz.zhanbolat.spring.config.WebConfig;
 import kz.zhanbolat.spring.controller.BookingController;
 import org.jsoup.Jsoup;
@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Tag("Slow-tests")
-@SpringJUnitWebConfig(classes = {WebConfig.class, ServiceConfig.class})
+@SpringJUnitWebConfig(classes = {WebConfig.class, TestConfig.class})
 public class BookingControllerIntegrationTest {
     @InjectMocks
     private BookingController bookingController;

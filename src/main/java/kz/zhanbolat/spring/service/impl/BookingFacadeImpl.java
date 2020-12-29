@@ -3,6 +3,7 @@ package kz.zhanbolat.spring.service.impl;
 import kz.zhanbolat.spring.entity.Event;
 import kz.zhanbolat.spring.entity.Ticket;
 import kz.zhanbolat.spring.entity.User;
+import kz.zhanbolat.spring.exception.BatchActionException;
 import kz.zhanbolat.spring.service.BookingFacade;
 import kz.zhanbolat.spring.service.EventService;
 import kz.zhanbolat.spring.service.TicketService;
@@ -11,16 +12,22 @@ import kz.zhanbolat.spring.service.UserService;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 
 public class BookingFacadeImpl implements BookingFacade {
     private UserService userService;
     private TicketService ticketService;
     private EventService eventService;
+    private Function<String, List<Ticket>> ticketLoader;
 
     public BookingFacadeImpl(UserService userService, TicketService ticketService, EventService eventService) {
         this.userService = userService;
         this.ticketService = ticketService;
         this.eventService = eventService;
+    }
+
+    public void setTicketLoader(Function<String, List<Ticket>> ticketLoader) {
+        this.ticketLoader = ticketLoader;
     }
 
     @Override
@@ -100,5 +107,17 @@ public class BookingFacadeImpl implements BookingFacade {
     @Override
     public List<Ticket> getBookedTickets(User user, int pageSize, int pageNum) {
         return ticketService.getBookedTicketsByUserId(user.getId());
+    }
+
+    @Override
+    public void preloadTickets(String filePath) {
+        final List<Ticket> tickets = ticketLoader.apply(filePath);
+        tickets.forEach(ticket -> {
+            Optional<Ticket> duplicateTicket = ticketService.getTicket(ticket.getId());
+            if (duplicateTicket.isPresent()) {
+                throw new BatchActionException("Cannot load tickets, because ticket - " + ticket + " is already loaded");
+            }
+        });
+        tickets.forEach(ticket -> ticketService.createTicket(ticket));
     }
 }

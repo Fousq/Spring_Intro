@@ -14,7 +14,6 @@ import java.util.Properties;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-// todo: implement it when dao is implemented
 public class UserRepositoryIntegrationTest {
     private UserRepositoryImpl userRepository;
 

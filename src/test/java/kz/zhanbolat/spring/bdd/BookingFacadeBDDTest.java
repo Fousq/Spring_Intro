@@ -28,7 +28,7 @@ public class BookingFacadeBDDTest {
 
     @Before
     public void setUp() {
-        context = new ClassPathXmlApplicationContext("spring-context.xml");
+        context = new ClassPathXmlApplicationContext("spring-test-context.xml");
         bookingFacade = context.getBean("bookingFacade", BookingFacadeImpl.class);
     }
 

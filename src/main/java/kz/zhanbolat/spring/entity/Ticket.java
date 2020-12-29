@@ -1,12 +1,18 @@
 package kz.zhanbolat.spring.entity;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Objects;
 
+@XmlRootElement(name = "ticket")
 public class Ticket implements Entity {
     private int id;
     private int userId;
     private int eventId;
     private boolean isBooked;
+
+    public Ticket() {
+    }
 
     public Ticket(Builder builder) {
         id = builder.id;
@@ -15,6 +21,7 @@ public class Ticket implements Entity {
         isBooked = builder.isBooked;
     }
 
+    @XmlAttribute(name = "id", required = true)
     public int getId() {
         return id;
     }
@@ -23,6 +30,7 @@ public class Ticket implements Entity {
         this.id = id;
     }
 
+    @XmlAttribute(name = "userId")
     public int getUserId() {
         return userId;
     }
@@ -31,6 +39,7 @@ public class Ticket implements Entity {
         this.userId = userId;
     }
 
+    @XmlAttribute(name = "eventId", required = true)
     public int getEventId() {
         return eventId;
     }
@@ -39,6 +48,7 @@ public class Ticket implements Entity {
         this.eventId = eventId;
     }
 
+    @XmlAttribute(name = "booked")
     public boolean isBooked() {
         return isBooked;
     }

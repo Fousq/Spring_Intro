@@ -21,7 +21,7 @@
     <bean id="dataInitializeBeanPostProcessor" class="kz.zhanbolat.spring.processor.DataInitializeBeanPostProcessor">
         <constructor-arg>
             <map>
-                <entry key="dataStorage" value="storage/all_data.properties"/>
+                <entry key="dataStorage" value="storage/test_data.properties"/>
             </map>
         </constructor-arg>
     </bean>
@@ -36,13 +36,13 @@
     </bean>
 
     <bean id="dataStorage" class="kz.zhanbolat.spring.storage.DataStorage"
-        p:userMapper-ref="userMapper"
-        p:eventMapper-ref="eventMapper"
-        p:ticketMapper-ref="ticketMapper">
+          p:userMapper-ref="userMapper"
+          p:eventMapper-ref="eventMapper"
+          p:ticketMapper-ref="ticketMapper">
     </bean>
 
     <bean id="userRepository" class="kz.zhanbolat.spring.repository.impl.UserRepositoryImpl"
-        p:dataStorage-ref="dataStorage">
+          p:dataStorage-ref="dataStorage">
     </bean>
 
     <bean id="eventRepository" class="kz.zhanbolat.spring.repository.impl.EventRepositoryImpl"
