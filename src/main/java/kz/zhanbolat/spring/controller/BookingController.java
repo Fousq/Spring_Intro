@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -157,5 +156,11 @@ public class BookingController {
         modelMap.put("pageNum", pageNum);
 
         return new ModelAndView("pdfView", modelMap);
+    }
+
+    @ExceptionHandler
+    public String handleControllerExceptions(Exception e, Model model) {
+        model.addAttribute("error", e.getMessage());
+        return "unpredicted_error_page";
     }
 }
