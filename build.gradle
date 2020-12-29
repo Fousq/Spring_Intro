@@ -5,12 +5,19 @@
  * For more details take a look at the Java Quickstart chapter in the Gradle
  * User Manual available at https://docs.gradle.org/6.5/userguide/tutorial_java_projects.html
  */
+buildscript {
+    dependencies {
+        classpath 'org.postgresql:postgresql:42.2.18'
+    }
+}
 
 plugins {
     // Apply the java plugin to add support for Java
     id 'java'
 
     id 'war'
+
+    id "org.flywaydb.flyway" version "7.3.2"
 }
 
 repositories {
@@ -47,6 +54,11 @@ dependencies {
     implementation('org.springframework:spring-oxm:5.3.2') {
         exclude group: 'commons-logging', module: 'commons-logging'
     }
+    // https://mvnrepository.com/artifact/org.flywaydb/flyway-core
+    implementation group: 'org.flywaydb', name: 'flyway-core', version: '7.3.2'
+
+    // https://mvnrepository.com/artifact/org.postgresql/postgresql
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.18'
 
     // https://mvnrepository.com/artifact/com.lowagie.text/com.springsource.com.lowagie.text
     implementation group: 'com.lowagie.text', name: 'com.springsource.com.lowagie.text', version: '2.0.8'
@@ -114,4 +126,11 @@ task cucumber() {
             args = ['--plugin', 'pretty', '--glue', 'kz.zhanbolat.spring.bdd', 'src/test/resources/features']
         }
     }
+}
+
+
+flyway {
+    url = 'jdbc:postgresql://localhost/test_db'
+    user = 'postgres'
+    password = '123456fifa'
 }
