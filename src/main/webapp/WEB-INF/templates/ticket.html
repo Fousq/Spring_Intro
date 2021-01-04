@@ -11,7 +11,7 @@
     <div>
         <h1>Ticket:</h1><br>
         <h2>Id: <span th:text="${ticket.id}"></span></h2>
-        <div th:if="${ticket.userId} != 0">
+        <div th:if="${ticket.user} != null">
             <h2 >User id: <span th:text="${ticket.userId}"></span></h2><br>
         </div>
         <h2>Event id: <span th:text="${ticket.eventId}"></span></h2><br>

@@ -1,21 +1,39 @@
 package kz.zhanbolat.spring.entity;
 
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
+@javax.persistence.Entity
+@Table(name = "event")
 public class Event implements Entity {
-    private int id;
+    @Id
+    private Long id;
     private String name;
 
-    public Event(int id, String name) {
+    @OneToMany(targetEntity = Ticket.class, mappedBy = "event")
+    private List<Ticket> tickets = new ArrayList<>();
+
+    public Event(Long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public int getId() {
+    public Event(Long id) {
+        this.id = id;
+    }
+
+    public Event() {
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -25,6 +43,14 @@ public class Event implements Entity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<Ticket> getTickets() {
+        return tickets;
+    }
+
+    public void setTickets(List<Ticket> tickets) {
+        this.tickets = tickets;
     }
 
     @Override
@@ -40,7 +66,7 @@ public class Event implements Entity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Event event = (Event) o;
-        return id == event.id && Objects.equals(name, event.name);
+        return Objects.equals(id, event.id) && Objects.equals(name, event.name);
     }
 
     @Override

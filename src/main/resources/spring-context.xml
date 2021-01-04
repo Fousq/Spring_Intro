@@ -18,41 +18,6 @@
           p:unmarshaller-ref="jaxb2Marshaller">
     </bean>
 
-    <bean id="dataInitializeBeanPostProcessor" class="kz.zhanbolat.spring.processor.DataInitializeBeanPostProcessor">
-        <constructor-arg>
-            <map>
-                <entry key="dataStorage" value="storage/all_data.properties"/>
-            </map>
-        </constructor-arg>
-    </bean>
-
-    <bean id="userMapper" class="kz.zhanbolat.spring.mapper.UserMapper">
-    </bean>
-
-    <bean id="eventMapper" class="kz.zhanbolat.spring.mapper.EventMapper">
-    </bean>
-
-    <bean id="ticketMapper" class="kz.zhanbolat.spring.mapper.TicketMapper">
-    </bean>
-
-    <bean id="dataStorage" class="kz.zhanbolat.spring.storage.DataStorage"
-        p:userMapper-ref="userMapper"
-        p:eventMapper-ref="eventMapper"
-        p:ticketMapper-ref="ticketMapper">
-    </bean>
-
-    <bean id="userRepository" class="kz.zhanbolat.spring.repository.impl.UserRepositoryImpl"
-        p:dataStorage-ref="dataStorage">
-    </bean>
-
-    <bean id="eventRepository" class="kz.zhanbolat.spring.repository.impl.EventRepositoryImpl"
-          p:dataStorage-ref="dataStorage">
-    </bean>
-
-    <bean id="ticketRepository" class="kz.zhanbolat.spring.repository.impl.TicketRepositoryImpl"
-          p:dataStorage-ref="dataStorage">
-    </bean>
-
     <bean id="userService" class="kz.zhanbolat.spring.service.impl.UserServiceImpl" autowire="byType">
     </bean>
 

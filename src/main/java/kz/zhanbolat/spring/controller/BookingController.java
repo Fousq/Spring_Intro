@@ -43,7 +43,7 @@ public class BookingController {
     }
 
     @PostMapping("/user/create")
-    public String createUser(@RequestAttribute Integer userId, @RequestAttribute String username, Model model) {
+    public String createUser(@RequestAttribute Long userId, @RequestAttribute String username, Model model) {
         boolean isCreated = bookingFacade.createUser(new User(userId, username));
         if (!isCreated) {
             model.addAttribute("errorMsg",
@@ -54,7 +54,7 @@ public class BookingController {
     }
 
     @PostMapping("/event/create")
-    public String createEvent(@RequestAttribute Integer eventId, @RequestAttribute String eventName, Model model) {
+    public String createEvent(@RequestAttribute Long eventId, @RequestAttribute String eventName, Model model) {
         boolean isCreated = bookingFacade.createEvent(new Event(eventId, eventName));
         if (!isCreated) {
             model.addAttribute("errorMsg",
@@ -65,8 +65,8 @@ public class BookingController {
     }
 
     @PostMapping("/ticket/create")
-    public String createTicket(@RequestAttribute Integer ticketId, @RequestAttribute Integer eventId, Model model) {
-        boolean isCreated = bookingFacade.createTicket(Ticket.builder().setId(ticketId).setEventId(eventId).build());
+    public String createTicket(@RequestAttribute Long ticketId, @RequestAttribute Long eventId, Model model) {
+        boolean isCreated = bookingFacade.createTicket(Ticket.builder().setId(ticketId).setEvent(new Event(eventId)).build());
         if (!isCreated) {
             model.addAttribute("errorMsg",
                     "Cannot create ticket with id - " + ticketId + ", event id - " + eventId);
@@ -76,7 +76,7 @@ public class BookingController {
     }
 
     @GetMapping("/user/{userId}")
-    public String getUser(@PathVariable("userId") Integer userId, Model model) {
+    public String getUser(@PathVariable("userId") Long userId, Model model) {
         final Optional<User> user = bookingFacade.getUser(userId);
         if (!user.isPresent()) {
             throw new EntityNotFoundException("The user cannot be found.");
@@ -86,7 +86,7 @@ public class BookingController {
     }
 
     @GetMapping("/event/{eventId}")
-    public String getEvent(@PathVariable("eventId") Integer eventId, Model model) {
+    public String getEvent(@PathVariable("eventId") Long eventId, Model model) {
         final Optional<Event> event = bookingFacade.getEvent(eventId);
         if (!event.isPresent()) {
             throw new EntityNotFoundException("The event cannot be found.");
@@ -96,7 +96,7 @@ public class BookingController {
     }
 
     @GetMapping("/ticket/{ticketId}")
-    public String getTicket(@PathVariable("ticketId") Integer ticketId, Model model) {
+    public String getTicket(@PathVariable("ticketId") Long ticketId, Model model) {
         final Optional<Ticket> ticket = bookingFacade.getTicket(ticketId);
         if (!ticket.isPresent()) {
             throw new EntityNotFoundException("The ticket cannot be found.");
@@ -111,9 +111,9 @@ public class BookingController {
     }
 
     @PostMapping("/book")
-    public String bookTicket(@RequestAttribute Integer userId, @RequestAttribute Integer ticketId,
-                             @RequestAttribute Integer eventId, Model model) {
-        final boolean isBooked = bookingFacade.bookTicket(userId, Ticket.builder().setId(ticketId).setEventId(eventId).build());
+    public String bookTicket(@RequestAttribute Long userId, @RequestAttribute Long ticketId,
+                             @RequestAttribute Long eventId, Model model) {
+        final boolean isBooked = bookingFacade.bookTicket(userId, Ticket.builder().setId(ticketId).setEvent(new Event(eventId)).build());
         if (!isBooked) {
             model.addAttribute("errorMsg",
                     "Ticket cannot be booked with id - " + ticketId + ", event id - " + eventId
@@ -131,10 +131,10 @@ public class BookingController {
     }
 
     @PostMapping("/cancel")
-    public String cancelBooking(@RequestAttribute Integer userId, @RequestAttribute Integer ticketId,
-                                @RequestAttribute Integer eventId, Model model) {
+    public String cancelBooking(@RequestAttribute Long userId, @RequestAttribute Long ticketId,
+                                @RequestAttribute Long eventId, Model model) {
         final boolean isCanceled = bookingFacade.cancelBooking(userId,
-                Ticket.builder().setId(ticketId).setEventId(eventId).setUserId(userId).build());
+                Ticket.builder().setId(ticketId).setEvent(new Event(eventId)).setUser(new User(userId)).build());
         if (!isCanceled) {
             model.addAttribute("errorMsg",
                     "Booking of ticket cannot be canceled with id - " + ticketId + ", event id - " + eventId
@@ -147,7 +147,7 @@ public class BookingController {
     }
 
     @GetMapping(value = "/ticket/list/booked/{userId}", produces = "application/pdf")
-    public ModelAndView bookedTickets(@PathVariable("userId") Integer userId, @RequestParam(value = "pageSize", defaultValue = "400") Integer pageSize,
+    public ModelAndView bookedTickets(@PathVariable("userId") Long userId, @RequestParam(value = "pageSize", defaultValue = "400") Integer pageSize,
                                       @RequestParam(value = "pageNum", defaultValue = "10") Integer pageNum) {
         Map<String, Object> modelMap = new HashMap<>();
 

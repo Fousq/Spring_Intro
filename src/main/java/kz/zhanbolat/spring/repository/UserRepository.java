@@ -6,6 +6,6 @@ import java.util.Optional;
 
 public interface UserRepository {
     boolean createUser(User user);
-    Optional<User> getUserByTicketId(int ticketId);
-    Optional<User> getUser(int id);
+    Optional<User> getUserByTicketId(Long ticketId);
+    Optional<User> getUser(Long id);
 }

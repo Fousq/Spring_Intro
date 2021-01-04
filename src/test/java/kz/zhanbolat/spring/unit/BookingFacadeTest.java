@@ -1,5 +1,6 @@
 package kz.zhanbolat.spring.unit;
 
+import kz.zhanbolat.spring.entity.Event;
 import kz.zhanbolat.spring.entity.Ticket;
 import kz.zhanbolat.spring.entity.User;
 import kz.zhanbolat.spring.service.EventService;
@@ -13,7 +14,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -36,12 +37,12 @@ public class BookingFacadeTest {
 
     @Test
     public void shouldReturnTrue_whenPassUserAndUnbookedTicket() {
-        final Ticket ticket = Ticket.builder().setId(1).setEventId(1).build();
-        when(userService.getUser(anyInt())).thenReturn(Optional.of(new User(1, "test")));
-        when(ticketService.getUnbookedTicketsForEvent(anyInt())).thenReturn(Collections.singletonList(ticket));
+        final Ticket ticket = Ticket.builder().setId(1L).setEvent(new Event(1L)).build();
+        when(userService.getUser(anyLong())).thenReturn(Optional.of(new User(1L, "test")));
+        when(ticketService.getUnbookedTicketsForEvent(anyLong())).thenReturn(Collections.singletonList(ticket));
         when(ticketService.updateTicket(ticket)).thenReturn(true);
 
-        boolean isTicketBooked = bookingFacade.bookTicket(1, ticket);
+        boolean isTicketBooked = bookingFacade.bookTicket(1L, ticket);
 
         assertTrue(isTicketBooked);
     }
@@ -49,59 +50,59 @@ public class BookingFacadeTest {
     @Test
     public void shouldReturnFalse_whenPassNullParameters() {
         assertAll(() -> {
-            assertThrows(IllegalArgumentException.class, () -> bookingFacade.bookTicket(0, Ticket.builder().build()));
-            assertThrows(IllegalArgumentException.class, () -> bookingFacade.bookTicket(-1, Ticket.builder().build()));
-            assertThrows(IllegalArgumentException.class, () -> bookingFacade.bookTicket(1, null));
-            assertThrows(IllegalArgumentException.class, () -> bookingFacade.bookTicket(0, null));
-            assertThrows(IllegalArgumentException.class, () -> bookingFacade.bookTicket(-1, null));
-            assertThrows(IllegalArgumentException.class, () -> bookingFacade.cancelBooking(0, Ticket.builder().build()));
-            assertThrows(IllegalArgumentException.class, () -> bookingFacade.cancelBooking(-1, Ticket.builder().build()));
-            assertThrows(IllegalArgumentException.class, () -> bookingFacade.cancelBooking(1, null));
-            assertThrows(IllegalArgumentException.class, () -> bookingFacade.cancelBooking(0, null));
-            assertThrows(IllegalArgumentException.class, () -> bookingFacade.cancelBooking(-1, null));
+            assertThrows(IllegalArgumentException.class, () -> bookingFacade.bookTicket(0L, Ticket.builder().build()));
+            assertThrows(IllegalArgumentException.class, () -> bookingFacade.bookTicket(-1L, Ticket.builder().build()));
+            assertThrows(IllegalArgumentException.class, () -> bookingFacade.bookTicket(1L, null));
+            assertThrows(IllegalArgumentException.class, () -> bookingFacade.bookTicket(0L, null));
+            assertThrows(IllegalArgumentException.class, () -> bookingFacade.bookTicket(-1L, null));
+            assertThrows(IllegalArgumentException.class, () -> bookingFacade.cancelBooking(0L, Ticket.builder().build()));
+            assertThrows(IllegalArgumentException.class, () -> bookingFacade.cancelBooking(-1L, Ticket.builder().build()));
+            assertThrows(IllegalArgumentException.class, () -> bookingFacade.cancelBooking(1L, null));
+            assertThrows(IllegalArgumentException.class, () -> bookingFacade.cancelBooking(0L, null));
+            assertThrows(IllegalArgumentException.class, () -> bookingFacade.cancelBooking(-1L, null));
         });
     }
 
     @Test
     public void shouldReturnFalse_whenPassUserAndBookedTicket() {
-        when(userService.getUser(anyInt())).thenReturn(Optional.of(new User(1, "test")));
-        when(ticketService.getUnbookedTicketsForEvent(anyInt())).thenReturn(Collections.singletonList(Ticket.builder().setId(2).build()));
+        when(userService.getUser(anyLong())).thenReturn(Optional.of(new User(1L, "test")));
+        when(ticketService.getUnbookedTicketsForEvent(anyLong())).thenReturn(Collections.singletonList(Ticket.builder().setId(2L).build()));
 
-        boolean isTicketBooked = bookingFacade.bookTicket(1, Ticket.builder().setId(1).setEventId(1).build());
+        boolean isTicketBooked = bookingFacade.bookTicket(1L, Ticket.builder().setId(1L).setEvent(new Event(1L)).build());
 
         assertFalse(isTicketBooked);
     }
 
     @Test
     public void shouldReturnTrue_whenPassBookedTicketAndUserWhoBookedTicket() {
-        final Ticket ticket = Ticket.builder().setId(1).setEventId(1).build();
-        when(userService.getUser(anyInt())).thenReturn(Optional.of(new User(1, "test")));
-        when(ticketService.getUnbookedTicketsForEvent(anyInt())).thenReturn(Collections.singletonList(Ticket.builder().setId(2).build()));
-        when(userService.getUserByTicketId(anyInt())).thenReturn(Optional.of(new User(1, "test")));
+        final Ticket ticket = Ticket.builder().setId(1L).setEvent(new Event(1L)).build();
+        when(userService.getUser(anyLong())).thenReturn(Optional.of(new User(1L, "test")));
+        when(ticketService.getUnbookedTicketsForEvent(anyLong())).thenReturn(Collections.singletonList(Ticket.builder().setId(2L).build()));
+        when(userService.getUserByTicketId(anyLong())).thenReturn(Optional.of(new User(1L, "test")));
         when(ticketService.updateTicket(ticket)).thenReturn(true);
 
-        boolean isBookingCancel = bookingFacade.cancelBooking(1, ticket);
+        boolean isBookingCancel = bookingFacade.cancelBooking(1L, ticket);
 
         assertTrue(isBookingCancel);
     }
 
     @Test
     public void shouldReturnFalse_whenPassUnBookedTicketAndUser() {
-        when(userService.getUser(anyInt())).thenReturn(Optional.of(new User(1, "test")));
-        when(ticketService.getUnbookedTicketsForEvent(anyInt())).thenReturn(Collections.singletonList(Ticket.builder().setId(1).build()));
+        when(userService.getUser(anyLong())).thenReturn(Optional.of(new User(1L, "test")));
+        when(ticketService.getUnbookedTicketsForEvent(anyLong())).thenReturn(Collections.singletonList(Ticket.builder().setId(1L).build()));
 
-        boolean isBookingCancel = bookingFacade.cancelBooking(1, Ticket.builder().setId(1).setEventId(1).build());
+        boolean isBookingCancel = bookingFacade.cancelBooking(1L, Ticket.builder().setId(1L).setEvent(new Event(1L)).build());
 
         assertFalse(isBookingCancel);
     }
 
     @Test
     public void shouldReturnFalse_whenPassBookedTicketAndUserWhoDidNotBookTicket() {
-        when(userService.getUser(anyInt())).thenReturn(Optional.of(new User(1, "test")));
-        when(ticketService.getUnbookedTicketsForEvent(anyInt())).thenReturn(Collections.singletonList(Ticket.builder().setId(1).build()));
-        when(userService.getUserByTicketId(anyInt())).thenReturn(Optional.of(new User(2, "test")));
+        when(userService.getUser(anyLong())).thenReturn(Optional.of(new User(1L, "test")));
+        when(ticketService.getUnbookedTicketsForEvent(anyLong())).thenReturn(Collections.singletonList(Ticket.builder().setId(1L).build()));
+        when(userService.getUserByTicketId(anyLong())).thenReturn(Optional.of(new User(2L, "test")));
 
-        boolean isBookingCancel = bookingFacade.cancelBooking(1, Ticket.builder().setId(1).build());
+        boolean isBookingCancel = bookingFacade.cancelBooking(1L, Ticket.builder().setId(1L).build());
 
         assertFalse(isBookingCancel);
     }

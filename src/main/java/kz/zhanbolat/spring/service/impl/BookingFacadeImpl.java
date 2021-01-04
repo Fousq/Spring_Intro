@@ -8,6 +8,7 @@ import kz.zhanbolat.spring.service.BookingFacade;
 import kz.zhanbolat.spring.service.EventService;
 import kz.zhanbolat.spring.service.TicketService;
 import kz.zhanbolat.spring.service.UserService;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -46,22 +47,23 @@ public class BookingFacadeImpl implements BookingFacade {
     }
 
     @Override
-    public Optional<User> getUser(int id) {
+    public Optional<User> getUser(Long id) {
         return userService.getUser(id);
     }
 
     @Override
-    public Optional<Event> getEvent(int id) {
+    public Optional<Event> getEvent(Long id) {
         return eventService.getEvent(id);
     }
 
     @Override
-    public Optional<Ticket> getTicket(int id) {
+    public Optional<Ticket> getTicket(Long id) {
         return ticketService.getTicket(id);
     }
 
     @Override
-    public boolean bookTicket(int userId, Ticket ticket) {
+    @Transactional
+    public boolean bookTicket(Long userId, Ticket ticket) {
         if (userId < 1 || Objects.isNull(ticket)) {
             throw new IllegalArgumentException("User id or ticket object are not suitable. " +
                     "User id must be above 0, and ticket object should not be null.");
@@ -70,9 +72,9 @@ public class BookingFacadeImpl implements BookingFacade {
         if (!foundedUser.isPresent()) {
             return false;
         }
-        List<Ticket> unbookedTickets = ticketService.getUnbookedTicketsForEvent(ticket.getEventId());
-        if (unbookedTickets.stream().anyMatch(unbookedTicket -> unbookedTicket.getId() == ticket.getId())) {
-            ticket.setUserId(userId);
+        List<Ticket> unbookedTickets = ticketService.getUnbookedTicketsForEvent(ticket.getEvent().getId());
+        if (unbookedTickets.stream().anyMatch(unbookedTicket -> Objects.equals(unbookedTicket.getId(), ticket.getId()))) {
+            ticket.setUser(foundedUser.get());
             ticket.setBooked(true);
             return ticketService.updateTicket(ticket);
         }
@@ -80,7 +82,8 @@ public class BookingFacadeImpl implements BookingFacade {
     }
 
     @Override
-    public boolean cancelBooking(int userId, Ticket ticket) {
+    @Transactional
+    public boolean cancelBooking(Long userId, Ticket ticket) {
         if (userId < 1 || Objects.isNull(ticket)) {
             throw new IllegalArgumentException("User id or ticket object are not suitable. " +
                     "User id must be above 0, and ticket object should not be null.");
@@ -91,13 +94,13 @@ public class BookingFacadeImpl implements BookingFacade {
         }
         final List<Ticket> unbookedTickets = ticketService.getUnbookedTicketsForEvent(ticket.getEventId());
         for (Ticket unbookedTicket : unbookedTickets) {
-            if (unbookedTicket.getId() == ticket.getId()) {
+            if (Objects.equals(unbookedTicket.getId(), ticket.getId())) {
                 return false;
             }
         }
         user = userService.getUserByTicketId(ticket.getId());
         if (user.isPresent() && user.get().getId() == userId) {
-            ticket.setUserId(0);
+            ticket.setUser(null);
             ticket.setBooked(false);
             return ticketService.updateTicket(ticket);
         }

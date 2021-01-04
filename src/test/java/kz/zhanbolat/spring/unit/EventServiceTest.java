@@ -12,7 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -24,9 +24,9 @@ public class EventServiceTest {
 
     @Test
     public void shouldReturnEvent_whenPassId() {
-        when(eventRepository.getEvent(anyInt())).thenReturn(Optional.of(new Event(1, "test")));
+        when(eventRepository.getEvent(anyLong())).thenReturn(Optional.of(new Event(1L, "test")));
 
-        final Optional<Event> event = eventService.getEvent(1);
+        final Optional<Event> event = eventService.getEvent(1L);
 
         assertTrue(event.isPresent());
         assertEquals(1, event.get().getId());
@@ -35,9 +35,9 @@ public class EventServiceTest {
 
     @Test
     public void shouldReturnEmpty_whenPassNonExistedId() {
-        when(eventRepository.getEvent(anyInt())).thenReturn(Optional.empty());
+        when(eventRepository.getEvent(anyLong())).thenReturn(Optional.empty());
 
-        final Optional<Event> event = eventService.getEvent(1);
+        final Optional<Event> event = eventService.getEvent(1L);
 
         assertFalse(event.isPresent());
     }
@@ -45,8 +45,8 @@ public class EventServiceTest {
     @Test
     public void shouldThrowExceptions_whenPassNegativeOrZeroId() {
         assertAll(() -> {
-            assertThrows(IllegalArgumentException.class, () -> eventService.getEvent(0));
-            assertThrows(IllegalArgumentException.class, () -> eventService.getEvent(-1));
+            assertThrows(IllegalArgumentException.class, () -> eventService.getEvent(0L));
+            assertThrows(IllegalArgumentException.class, () -> eventService.getEvent(-1L));
         });
     }
 }

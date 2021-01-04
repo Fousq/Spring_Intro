@@ -11,11 +11,11 @@ public interface BookingFacade {
     boolean createUser(User user);
     boolean createEvent(Event event);
     boolean createTicket(Ticket ticket);
-    Optional<User> getUser(int id);
-    Optional<Event> getEvent(int id);
-    Optional<Ticket> getTicket(int id);
-    boolean bookTicket(int userId, Ticket ticket);
-    boolean cancelBooking(int userId, Ticket ticket);
+    Optional<User> getUser(Long id);
+    Optional<Event> getEvent(Long id);
+    Optional<Ticket> getTicket(Long id);
+    boolean bookTicket(Long userId, Ticket ticket);
+    boolean cancelBooking(Long userId, Ticket ticket);
     List<Ticket> getBookedTickets(User user, int pageSize, int pageNum);
     void preloadTickets(String filePath);
 }

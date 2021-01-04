@@ -7,8 +7,8 @@ import java.util.Optional;
 
 public interface TicketService {
     boolean createTicket(Ticket ticket);
-    List<Ticket> getUnbookedTicketsForEvent(int eventId);
+    List<Ticket> getUnbookedTicketsForEvent(Long eventId);
     boolean updateTicket(Ticket ticket);
-    Optional<Ticket> getTicket(int id);
-    List<Ticket> getBookedTicketsByUserId(int userId);
+    Optional<Ticket> getTicket(Long id);
+    List<Ticket> getBookedTicketsByUserId(Long userId);
 }

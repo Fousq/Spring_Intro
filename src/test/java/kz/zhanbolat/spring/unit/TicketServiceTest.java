@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -26,17 +26,17 @@ public class TicketServiceTest {
     @Test
     public void shouldThrowsException_whenPassNull() {
         assertAll(() -> {
-            assertThrows(IllegalArgumentException.class, () -> ticketService.getUnbookedTicketsForEvent(0));
-            assertThrows(IllegalArgumentException.class, () -> ticketService.getUnbookedTicketsForEvent(-1));
+            assertThrows(IllegalArgumentException.class, () -> ticketService.getUnbookedTicketsForEvent(0L));
+            assertThrows(IllegalArgumentException.class, () -> ticketService.getUnbookedTicketsForEvent(-1L));
         });
 
     }
 
     @Test
     public void shouldReturnUnbookedTicketsList_whenPassEvent() {
-        when(ticketRepository.getUnbookedTicketsForEvent(anyInt())).thenReturn(Collections.singletonList(Ticket.builder().build()));
+        when(ticketRepository.getUnbookedTicketsForEvent(anyLong())).thenReturn(Collections.singletonList(Ticket.builder().build()));
 
-        List<Ticket> tickets = ticketService.getUnbookedTicketsForEvent(1);
+        List<Ticket> tickets = ticketService.getUnbookedTicketsForEvent(1L);
 
         assertFalse(tickets.isEmpty());
     }

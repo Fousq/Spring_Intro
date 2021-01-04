@@ -7,6 +7,6 @@ import java.util.Optional;
 
 public interface EventService {
     boolean createEvent(Event event);
-    Optional<Event> getEvent(int id);
+    Optional<Event> getEvent(Long id);
     List<Event> getEvents();
 }

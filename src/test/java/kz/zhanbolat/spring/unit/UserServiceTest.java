@@ -12,7 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -24,8 +24,8 @@ public class UserServiceTest {
 
     @Test
     public void shouldReturnUser_whenPassExistedUserId() {
-        when(userRepository.getUser(anyInt())).thenReturn(Optional.of(new User(1, "test")));
-        final Optional<User> user = userService.getUser(1);
+        when(userRepository.getUser(anyLong())).thenReturn(Optional.of(new User(1L, "test")));
+        final Optional<User> user = userService.getUser(1L);
 
         assertTrue(user.isPresent());
         assertEquals(1, user.get().getId());
@@ -34,8 +34,8 @@ public class UserServiceTest {
 
     @Test
     public void shouldReturnEmpty_whenPassNonExistedUserId() {
-        when(userRepository.getUser(anyInt())).thenReturn(Optional.empty());
-        final Optional<User> user = userService.getUser(1);
+        when(userRepository.getUser(anyLong())).thenReturn(Optional.empty());
+        final Optional<User> user = userService.getUser(1L);
 
         assertFalse(user.isPresent());
     }
@@ -43,16 +43,16 @@ public class UserServiceTest {
     @Test
     public void shouldThrowExceptions_whenPassNegativeOrZeroValue() {
         assertAll(() -> {
-            assertThrows(IllegalArgumentException.class, () -> userService.getUser(0));
-            assertThrows(IllegalArgumentException.class, () -> userService.getUser(-1));
+            assertThrows(IllegalArgumentException.class, () -> userService.getUser(0L));
+            assertThrows(IllegalArgumentException.class, () -> userService.getUser(-1L));
         });
     }
 
     @Test
     public void shouldReturnUser_whenPassTicketId() {
-        when(userRepository.getUserByTicketId(anyInt())).thenReturn(Optional.of(new User(1, "test")));
+        when(userRepository.getUserByTicketId(anyLong())).thenReturn(Optional.of(new User(1L, "test")));
 
-        final Optional<User> user = userService.getUserByTicketId(1);
+        final Optional<User> user = userService.getUserByTicketId(1L);
 
         assertTrue(user.isPresent());
         assertEquals(1, user.get().getId());
@@ -61,9 +61,9 @@ public class UserServiceTest {
 
     @Test
     public void shouldReturnEmpty_whenPassNonExistedTicketId() {
-        when(userRepository.getUserByTicketId(anyInt())).thenReturn(Optional.empty());
+        when(userRepository.getUserByTicketId(anyLong())).thenReturn(Optional.empty());
 
-        final Optional<User> user = userService.getUserByTicketId(1);
+        final Optional<User> user = userService.getUserByTicketId(1L);
 
         assertFalse(user.isPresent());
     }
@@ -71,8 +71,8 @@ public class UserServiceTest {
     @Test
     public void shouldThrowExceptions_whenPassNegativeOrZeroTicketId() {
         assertAll(() -> {
-            assertThrows(IllegalArgumentException.class, () -> userService.getUserByTicketId(0));
-            assertThrows(IllegalArgumentException.class, () -> userService.getUserByTicketId(-1));
+            assertThrows(IllegalArgumentException.class, () -> userService.getUserByTicketId(0L));
+            assertThrows(IllegalArgumentException.class, () -> userService.getUserByTicketId(-1L));
         });
     }
 }

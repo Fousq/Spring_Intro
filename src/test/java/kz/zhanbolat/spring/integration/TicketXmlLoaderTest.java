@@ -1,6 +1,8 @@
 package kz.zhanbolat.spring.integration;
 
+import kz.zhanbolat.spring.entity.Event;
 import kz.zhanbolat.spring.entity.Ticket;
+import kz.zhanbolat.spring.entity.User;
 import kz.zhanbolat.spring.loader.TicketXmlLoader;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,8 +36,8 @@ public class TicketXmlLoaderTest {
         final List<Ticket> tickets = ticketXmlLoader.apply(path);
 
         assertFalse(tickets.isEmpty());
-        assertEquals(Ticket.builder().setId(1).setUserId(1).setEventId(1).setBooked(true).build(), tickets.get(0));
-        assertEquals(Ticket.builder().setId(2).setEventId(2).build(), tickets.get(1));
+        assertEquals(Ticket.builder().setId(1L).setUser(new User(1L)).setEvent(new Event(1L)).setBooked(true).build(), tickets.get(0));
+        assertEquals(Ticket.builder().setId(2L).setEvent(new Event(2L)).build(), tickets.get(1));
     }
 
     @Test

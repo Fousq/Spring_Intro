@@ -9,21 +9,21 @@ import org.jsoup.select.Elements;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Tag("Slow-tests")
 @SpringJUnitWebConfig(classes = {WebConfig.class, TestConfig.class})
 public class BookingControllerIntegrationTest {
-    @InjectMocks
     private BookingController bookingController;
     private MockMvc mockMvc;
 
@@ -33,6 +33,7 @@ public class BookingControllerIntegrationTest {
     }
 
     @Test
+    @Transactional
     public void shouldCreateUser_andRedirectToUserPage() throws Exception {
         mockMvc.perform(post("/user/create")
                 .requestAttr("userId", 4)
@@ -42,6 +43,7 @@ public class BookingControllerIntegrationTest {
     }
 
     @Test
+    @Transactional
     public void shouldNotCreateUser_andRedirectToUserCreatePage() throws Exception {
         mockMvc.perform(post("/user/create")
                 .requestAttr("userId", 1)
@@ -51,6 +53,7 @@ public class BookingControllerIntegrationTest {
     }
 
     @Test
+    @Transactional
     public void shouldCreateEvent_andRedirectToEventPage() throws Exception {
         mockMvc.perform(post("/event/create")
                 .requestAttr("eventId", 5)
@@ -60,6 +63,7 @@ public class BookingControllerIntegrationTest {
     }
 
     @Test
+    @Transactional
     public void shouldNotCreateEvent_andRedirectToEventCreatePage() throws Exception {
         mockMvc.perform(post("/event/create")
                 .requestAttr("eventId", 1)
@@ -69,15 +73,17 @@ public class BookingControllerIntegrationTest {
     }
 
     @Test
+    @Transactional
     public void shouldCreateTicket_andRedirectToTicketPage() throws Exception {
         mockMvc.perform(post("/ticket/create")
-                .requestAttr("ticketId", 8)
+                .requestAttr("ticketId", 10)
                 .requestAttr("eventId", 1))
-                .andExpect(forwardedUrl("/ticket/8"))
+                .andExpect(forwardedUrl("/ticket/10"))
                 .andExpect(status().isOk());
     }
 
     @Test
+    @Transactional
     public void shouldNotCreateTicket_andRedirectToTicketCreatePage() throws Exception {
         mockMvc.perform(post("/ticket/create")
                 .requestAttr("ticketId", 1)
@@ -146,6 +152,7 @@ public class BookingControllerIntegrationTest {
     }
 
     @Test
+    @Transactional
     public void shouldBookTicketSuccessfully() throws Exception {
         final MvcResult mvcResult = mockMvc.perform(post("/book")
                 .requestAttr("userId", 1)
@@ -161,6 +168,7 @@ public class BookingControllerIntegrationTest {
     }
 
     @Test
+    @Transactional
     public void shouldBookTicketWithFailure() throws Exception {
         mockMvc.perform(post("/book")
                 .requestAttr("userId", 1)
@@ -171,6 +179,7 @@ public class BookingControllerIntegrationTest {
     }
 
     @Test
+    @Transactional
     public void shouldCancelBookingSuccessfully() throws Exception {
         final MvcResult mvcResult = mockMvc.perform(post("/cancel")
                 .requestAttr("userId", 2)
@@ -186,6 +195,7 @@ public class BookingControllerIntegrationTest {
     }
 
     @Test
+    @Transactional
     public void shouldCancelBookingWithFailure() throws Exception {
         mockMvc.perform(post("/cancel")
                 .requestAttr("userId", 1)

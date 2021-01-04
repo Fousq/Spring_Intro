@@ -1,0 +1,1 @@
+insert into event(id, name) values (1, 'event1');
