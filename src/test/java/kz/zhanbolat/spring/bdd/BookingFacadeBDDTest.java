@@ -1,26 +1,25 @@
 package kz.zhanbolat.spring.bdd;
 
-import io.cucumber.java.After;
-import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import io.cucumber.spring.CucumberContextConfiguration;
 import kz.zhanbolat.spring.TestConfig;
 import kz.zhanbolat.spring.entity.Event;
 import kz.zhanbolat.spring.entity.Ticket;
 import kz.zhanbolat.spring.entity.User;
 import kz.zhanbolat.spring.service.BookingFacade;
-import org.junit.Ignore;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Ignore
-// todo: ignore the bdd tests until using testcontainer
+@CucumberContextConfiguration
+@SpringJUnitConfig(TestConfig.class)
 public class BookingFacadeBDDTest {
-    private AnnotationConfigApplicationContext context;
+    @Autowired
     private BookingFacade bookingFacade;
     private User user;
     private Event event;
@@ -28,17 +27,6 @@ public class BookingFacadeBDDTest {
     private boolean isCreated;
     private boolean isBooked;
     private boolean isCanceled;
-
-    @Before
-    public void setUp() {
-        context = new AnnotationConfigApplicationContext(TestConfig.class);
-        bookingFacade = context.getBean("bookingFacade", BookingFacade.class);
-    }
-
-    @After
-    public void tearDown() {
-        context.close();
-    }
 
     @Given("Provide {string} and {string}")
     public void provideAnd(String id, String username) {
@@ -80,7 +68,7 @@ public class BookingFacadeBDDTest {
     public void provideIdAndEventSId(String ticketId, String eventId) {
         ticket = Ticket.builder()
                 .setId(Long.parseLong(ticketId))
-                .setEvent(new Event(Long.parseLong(eventId)))
+                .setEvent(new Event(Long.parseLong(eventId), "event_3"))
                 .build();
     }
 

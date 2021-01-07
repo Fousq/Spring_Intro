@@ -12,6 +12,7 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.DockerImageName;
 
 import javax.sql.DataSource;
@@ -24,24 +25,39 @@ import java.util.Properties;
 // todo: think about profiling
 public class TestConfig {
 
-    // todo: should be tested later(doesn't work with wsl2)
+    // doesn't work with wsl2
+    @Bean(initMethod = "start", destroyMethod = "stop")
     public PostgreSQLContainer postgreSQLContainer() {
         PostgreSQLContainer postgresql = new PostgreSQLContainer(DockerImageName.parse("postgres:11"))
                 .withDatabaseName("test")
                 .withUsername("test")
                 .withPassword("0");
-        postgresql.withExposedPorts(5432);
-
-        Flyway flyway = Flyway.configure()
-                .dataSource(postgresql.getJdbcUrl(), postgresql.getUsername(), postgresql.getPassword())
-                .locations("classpath:db/migration", "classpath:db/test-migration-data")
-                .load();
-        flyway.migrate();
-
+        postgresql.addExposedPort(5432);
+        postgresql.waitingFor(Wait.forListeningPort());
         return postgresql;
     }
 
     @Bean
+    public DataSource containerDataSource(PostgreSQLContainer postgreSQLContainer) {
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(postgreSQLContainer.getJdbcUrl());
+        config.setUsername(postgreSQLContainer.getUsername());
+        config.setPassword(postgreSQLContainer.getPassword());
+        config.setDriverClassName("org.postgresql.Driver");
+        config.setMaximumPoolSize(20);
+
+        final HikariDataSource dataSource = new HikariDataSource(config);
+
+        final Flyway flyway = Flyway.configure()
+                .dataSource(dataSource)
+                .locations("classpath:db/migration", "classpath:test-migration-data")
+                .load();
+        flyway.migrate();
+
+        return dataSource;
+    }
+
+    // use if have an issues to boot tests with testcontainers
     public DataSource dataSource() {
         HikariDataSource dataSource = new HikariDataSource(new HikariConfig(getClass().getClassLoader().getResource("jdbc-test.properties").getPath()));
 
@@ -62,16 +78,16 @@ public class TestConfig {
     }
 
     @Bean
-    public LocalSessionFactoryBean sessionFactory() {
+    public LocalSessionFactoryBean sessionFactory(DataSource dataSource) {
         LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
-        sessionFactoryBean.setDataSource(dataSource());
+        sessionFactoryBean.setDataSource(dataSource);
         sessionFactoryBean.setHibernateProperties(hibernateProperties());
         sessionFactoryBean.setPackagesToScan("kz.zhanbolat.spring.entity");
         return sessionFactoryBean;
     }
 
     @Bean
-    public TransactionManager transactionManager() {
-        return new HibernateTransactionManager(sessionFactory().getObject());
+    public TransactionManager transactionManager(LocalSessionFactoryBean sessionFactory) {
+        return new HibernateTransactionManager(sessionFactory.getObject());
     }
 }

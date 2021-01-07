@@ -70,7 +70,7 @@ public class TicketRepositoryImpl implements TicketRepository {
                         .setParameter("ticketId", ticket.getId());
             } else {
                 query = sessionFactory.getCurrentSession().createNativeQuery("UPDATE ticket SET event_id = :eventId, " +
-                        "booked = :isBooked WHERE id = :ticketId")
+                        "user_id = NULL, booked = :isBooked WHERE id = :ticketId")
                         .setParameter("eventId", ticket.getEventId())
                         .setParameter("isBooked", ticket.isBooked())
                         .setParameter("ticketId", ticket.getId());

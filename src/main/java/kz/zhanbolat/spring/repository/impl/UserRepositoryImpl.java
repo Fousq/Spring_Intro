@@ -16,8 +16,12 @@ public class UserRepositoryImpl implements UserRepository {
     private static final Logger logger = LoggerFactory.getLogger(UserRepositoryImpl.class);
     private static final String SELECT_USER_BY_TICKET_ID_QUERY = "select ticket.user from Ticket ticket where ticket.id = :ticketId";
     private static final String SELECT_USER_BY_ID_QUERY = "from User user where user.id = :userId";
-    @Autowired
     private SessionFactory sessionFactory;
+
+    @Autowired
+    public UserRepositoryImpl(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     @Override
     public boolean createUser(User user) {
