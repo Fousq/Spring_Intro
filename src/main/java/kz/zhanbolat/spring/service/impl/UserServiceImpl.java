@@ -48,6 +48,12 @@ public class UserServiceImpl implements UserService {
         userRepository.updateUser(user.get());
     }
 
+    @Override
+    @Transactional
+    public boolean updateUser(User user) {
+        return userRepository.updateUser(user);
+    }
+
     public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
     }

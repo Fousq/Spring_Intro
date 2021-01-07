@@ -69,15 +69,24 @@ public class BookingFacadeImpl implements BookingFacade {
             throw new IllegalArgumentException("User id or ticket object are not suitable. " +
                     "User id must be above 0, and ticket object should not be null.");
         }
-        Optional<User> foundedUser = userService.getUser(userId);
-        if (!foundedUser.isPresent()) {
+        Optional<User> user = userService.getUser(userId);
+        if (!user.isPresent()) {
+            return false;
+        }
+        final Optional<Event> event = eventService.getEvent(ticket.getEventId());
+        if (!event.isPresent()) {
+            return false;
+        }
+        if (event.get().getTicketPrice().compareTo(user.get().getBalance()) == 1) {
             return false;
         }
         List<Ticket> unbookedTickets = ticketService.getUnbookedTicketsForEvent(ticket.getEvent().getId());
         if (unbookedTickets.stream().anyMatch(unbookedTicket -> Objects.equals(unbookedTicket.getId(), ticket.getId()))) {
-            ticket.setUser(foundedUser.get());
+            ticket.setUser(user.get());
             ticket.setBooked(true);
-            return ticketService.updateTicket(ticket);
+            boolean isBooked = ticketService.updateTicket(ticket);
+            user.get().setBalance(user.get().getBalance().subtract(event.get().getTicketPrice()));
+            return isBooked && userService.updateUser(user.get());
         }
         return false;
     }

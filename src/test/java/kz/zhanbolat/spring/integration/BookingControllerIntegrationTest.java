@@ -16,6 +16,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.math.BigDecimal;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -37,7 +39,8 @@ public class BookingControllerIntegrationTest {
     public void shouldCreateUser_andRedirectToUserPage() throws Exception {
         mockMvc.perform(post("/user/create")
                 .requestAttr("userId", 4)
-                .requestAttr("username", "username"))
+                .requestAttr("username", "username")
+                .requestAttr("balance", new BigDecimal(300)))
                 .andExpect(forwardedUrl("/user/4"))
                 .andExpect(status().isOk()).andReturn();
     }
@@ -47,7 +50,8 @@ public class BookingControllerIntegrationTest {
     public void shouldNotCreateUser_andRedirectToUserCreatePage() throws Exception {
         mockMvc.perform(post("/user/create")
                 .requestAttr("userId", 1)
-                .requestAttr("username", "username"))
+                .requestAttr("username", "username")
+                .requestAttr("balance", BigDecimal.TEN))
                 .andExpect(forwardedUrl("/user/create"))
                 .andExpect(status().isOk());
     }
@@ -57,7 +61,8 @@ public class BookingControllerIntegrationTest {
     public void shouldCreateEvent_andRedirectToEventPage() throws Exception {
         mockMvc.perform(post("/event/create")
                 .requestAttr("eventId", 5)
-                .requestAttr("eventName", "event name"))
+                .requestAttr("eventName", "event name")
+                .requestAttr("ticketPrice", BigDecimal.TEN))
                 .andExpect(forwardedUrl("/event/5"))
                 .andExpect(status().isOk());
     }
@@ -67,7 +72,8 @@ public class BookingControllerIntegrationTest {
     public void shouldNotCreateEvent_andRedirectToEventCreatePage() throws Exception {
         mockMvc.perform(post("/event/create")
                 .requestAttr("eventId", 1)
-                .requestAttr("eventName", "event name"))
+                .requestAttr("eventName", "event name")
+                .requestAttr("ticketPrice", BigDecimal.TEN))
                 .andExpect(forwardedUrl("/event/create"))
                 .andExpect(status().isOk());
     }

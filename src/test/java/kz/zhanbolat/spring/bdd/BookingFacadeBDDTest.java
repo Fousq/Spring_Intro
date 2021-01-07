@@ -12,6 +12,7 @@ import kz.zhanbolat.spring.service.BookingFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,7 +31,7 @@ public class BookingFacadeBDDTest {
 
     @Given("Provide {string} and {string}")
     public void provideAnd(String id, String username) {
-        user = new User(Long.parseLong(id), username);
+        user = new User(Long.parseLong(id), username, new BigDecimal(100));
     }
 
     @When("Need to create user")
@@ -48,7 +49,7 @@ public class BookingFacadeBDDTest {
 
     @Given("Provide event {string} and event {string}")
     public void provideEventAndEvent(String id, String name) {
-        event = new Event(Long.parseLong(id), name);
+        event = new Event(Long.parseLong(id), name, BigDecimal.TEN);
     }
 
     @When("Need to create event")

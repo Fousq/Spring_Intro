@@ -10,6 +10,7 @@ import kz.zhanbolat.spring.service.impl.BookingFacadeImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -37,10 +38,13 @@ public class BookingFacadeTest {
 
     @Test
     public void shouldReturnTrue_whenPassUserAndUnbookedTicket() {
-        final Ticket ticket = Ticket.builder().setId(1L).setEvent(new Event(1L)).build();
-        when(userService.getUser(anyLong())).thenReturn(Optional.of(new User(1L, "test")));
+        final Event event = new Event(1L, "event1", new BigDecimal(100));
+        final Ticket ticket = Ticket.builder().setId(1L).setEvent(event).build();
+        when(eventService.getEvent(anyLong())).thenReturn(Optional.of(event));
+        when(userService.getUser(anyLong())).thenReturn(Optional.of(new User(1L, "test", new BigDecimal(100))));
         when(ticketService.getUnbookedTicketsForEvent(anyLong())).thenReturn(Collections.singletonList(ticket));
         when(ticketService.updateTicket(ticket)).thenReturn(true);
+        when(userService.updateUser(new User(1L, "test", BigDecimal.ZERO))).thenReturn(true);
 
         boolean isTicketBooked = bookingFacade.bookTicket(1L, ticket);
 
@@ -65,8 +69,19 @@ public class BookingFacadeTest {
 
     @Test
     public void shouldReturnFalse_whenPassUserAndBookedTicket() {
-        when(userService.getUser(anyLong())).thenReturn(Optional.of(new User(1L, "test")));
+        when(userService.getUser(anyLong())).thenReturn(Optional.of(new User(1L, "test", new BigDecimal(10))));
+        when(eventService.getEvent(anyLong())).thenReturn(Optional.of(new Event(1L, "event1", new BigDecimal(10))));
         when(ticketService.getUnbookedTicketsForEvent(anyLong())).thenReturn(Collections.singletonList(Ticket.builder().setId(2L).build()));
+
+        boolean isTicketBooked = bookingFacade.bookTicket(1L, Ticket.builder().setId(1L).setEvent(new Event(1L)).build());
+
+        assertFalse(isTicketBooked);
+    }
+
+    @Test
+    public void shouldReturnFalse_whenBookTicket_givenUserWithNotEnoughBalanceToBook() {
+        when(userService.getUser(anyLong())).thenReturn(Optional.of(new User(1L, "test", new BigDecimal(1))));
+        when(eventService.getEvent(anyLong())).thenReturn(Optional.of(new Event(1L, "event1", new BigDecimal(10))));
 
         boolean isTicketBooked = bookingFacade.bookTicket(1L, Ticket.builder().setId(1L).setEvent(new Event(1L)).build());
 

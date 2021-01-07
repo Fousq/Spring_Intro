@@ -10,4 +10,5 @@ public interface UserService {
     Optional<User> getUserByTicketId(Long ticketId);
     Optional<User> getUser(Long id);
     void refillAccount(Long id, BigDecimal amount);
+    boolean updateUser(User user);
 }

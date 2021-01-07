@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -43,8 +44,9 @@ public class BookingController {
     }
 
     @PostMapping("/user/create")
-    public String createUser(@RequestAttribute Long userId, @RequestAttribute String username, Model model) {
-        boolean isCreated = bookingFacade.createUser(new User(userId, username));
+    public String createUser(@RequestAttribute Long userId, @RequestAttribute String username,
+                             @RequestAttribute BigDecimal balance, Model model) {
+        boolean isCreated = bookingFacade.createUser(new User(userId, username, balance));
         if (!isCreated) {
             model.addAttribute("errorMsg",
                     "Cannot create user with id - " + userId + ", username - " + username);
@@ -54,8 +56,9 @@ public class BookingController {
     }
 
     @PostMapping("/event/create")
-    public String createEvent(@RequestAttribute Long eventId, @RequestAttribute String eventName, Model model) {
-        boolean isCreated = bookingFacade.createEvent(new Event(eventId, eventName));
+    public String createEvent(@RequestAttribute Long eventId, @RequestAttribute String eventName,
+                              @RequestAttribute BigDecimal ticketPrice, Model model) {
+        boolean isCreated = bookingFacade.createEvent(new Event(eventId, eventName, ticketPrice));
         if (!isCreated) {
             model.addAttribute("errorMsg",
                     "Cannot create event with id - " + eventId + ", name - " + eventName);
