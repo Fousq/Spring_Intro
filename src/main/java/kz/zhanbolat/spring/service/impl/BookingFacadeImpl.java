@@ -10,6 +10,7 @@ import kz.zhanbolat.spring.service.TicketService;
 import kz.zhanbolat.spring.service.UserService;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -122,5 +123,10 @@ public class BookingFacadeImpl implements BookingFacade {
             }
         });
         tickets.forEach(ticket -> ticketService.createTicket(ticket));
+    }
+
+    @Override
+    public void refillAccount(Long id, BigDecimal amount) {
+        userService.refillAccount(id, amount);
     }
 }

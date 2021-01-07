@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,7 +37,7 @@ public class EventRepositoryIntegrationTest {
     @Test
     @Transactional
     public void shouldReturnTrue_whenCreateEvent_givenNewEvent() {
-        final boolean isCreated = eventRepository.createEvent(new Event(2L, "event2"));
+        final boolean isCreated = eventRepository.createEvent(new Event(2L, "event2", new BigDecimal(10)));
 
         assertTrue(isCreated);
     }
@@ -44,7 +45,7 @@ public class EventRepositoryIntegrationTest {
     @Test
     @Transactional
     public void shouldReturnFalse_whenCreateEvent_givenEventWithExistingId() {
-        final boolean isCreated = eventRepository.createEvent(new Event(1L, "event2"));
+        final boolean isCreated = eventRepository.createEvent(new Event(1L, "event2", new BigDecimal(10)));
 
         assertFalse(isCreated);
     }

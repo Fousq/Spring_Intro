@@ -5,6 +5,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -16,9 +17,16 @@ public class User {
     @Id
     private Long id;
     private String username;
+    private BigDecimal balance;
 
     @OneToMany(targetEntity = Ticket.class, mappedBy = "user")
     public List<Ticket> tickets = new ArrayList<>();
+
+    public User(Long id, String username, BigDecimal balance) {
+        this.id = id;
+        this.username = username;
+        this.balance = balance;
+    }
 
     public User(Long id, String username) {
         this.id = id;
@@ -46,6 +54,14 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
     }
 
     public List<Ticket> getTickets() {

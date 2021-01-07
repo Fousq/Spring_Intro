@@ -8,4 +8,5 @@ public interface UserRepository {
     boolean createUser(User user);
     Optional<User> getUserByTicketId(Long ticketId);
     Optional<User> getUser(Long id);
+    boolean updateUser(User user);
 }

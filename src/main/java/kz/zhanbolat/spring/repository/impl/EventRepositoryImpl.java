@@ -25,9 +25,10 @@ public class EventRepositoryImpl implements EventRepository {
     public boolean createEvent(Event event) {
         try {
             sessionFactory.getCurrentSession()
-                    .createNativeQuery("INSERT INTO event(id, name) values (?, ?)")
+                    .createNativeQuery("INSERT INTO event(id, name, ticket_price) values (?, ?, ?)")
                     .setParameter(1, event.getId())
                     .setParameter(2, event.getName())
+                    .setParameter(3, event.getTicketPrice())
                     .executeUpdate();
         } catch (Exception e) {
             logger.error("Got error on create event: " + event, e);

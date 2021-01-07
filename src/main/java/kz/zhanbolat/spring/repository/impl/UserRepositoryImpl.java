@@ -26,9 +26,10 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public boolean createUser(User user) {
         try {
-            sessionFactory.getCurrentSession().createNativeQuery("INSERT INTO user_account(id, username) VALUES (?, ?)")
+            sessionFactory.getCurrentSession().createNativeQuery("INSERT INTO user_account(id, username, balance) VALUES (?, ?, ?)")
                     .setParameter(1, user.getId())
                     .setParameter(2, user.getUsername())
+                    .setParameter(3, user.getBalance())
                     .executeUpdate();
         } catch (Exception e) {
             logger.error("Got error on creating the user: " + user, e);
@@ -61,5 +62,15 @@ public class UserRepositoryImpl implements UserRepository {
             return Optional.empty();
         }
         return Optional.of(user);
+    }
+
+    @Override
+    public boolean updateUser(User user) {
+        return sessionFactory.getCurrentSession().createNativeQuery("UPDATE user_account SET username = :username, " +
+                "balance = :balance WHERE id = :userId")
+                .setParameter("username", user.getUsername())
+                .setParameter("balance", user.getBalance())
+                .setParameter("userId", user.getId())
+                .executeUpdate() != 0;
     }
 }

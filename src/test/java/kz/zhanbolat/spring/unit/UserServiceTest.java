@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -74,5 +75,31 @@ public class UserServiceTest {
             assertThrows(IllegalArgumentException.class, () -> userService.getUserByTicketId(0L));
             assertThrows(IllegalArgumentException.class, () -> userService.getUserByTicketId(-1L));
         });
+    }
+
+    @Test
+    public void shouldRefillAccount_givenExistingUserAndNotZeroOrNegativeAmount() {
+        BigDecimal amount = new BigDecimal(100);
+        final User user = new User(1L, "test", new BigDecimal(100));
+        User updatedUser = new User(user.getId(), user.getUsername(), user.getBalance().add(amount));
+        when(userRepository.getUser(anyLong())).thenReturn(Optional.of(user));
+        when(userRepository.updateUser(updatedUser)).thenReturn(true);
+
+        userService.refillAccount(1L, amount);
+    }
+
+    @Test
+    public void shouldThrowExceptions_whenPassNegativeOrZeroAmount() {
+        assertAll(() -> {
+            assertThrows(IllegalArgumentException.class, () -> userService.refillAccount(1L, new BigDecimal(0)));
+            assertThrows(IllegalArgumentException.class, () -> userService.refillAccount(1L, new BigDecimal(-1)));
+        });
+    }
+
+    @Test
+    public void shouldThrowException_whenNotFindUserWithGivenId() {
+        when(userRepository.getUser(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class, () -> userService.refillAccount(1L, new BigDecimal(1)));
     }
 }

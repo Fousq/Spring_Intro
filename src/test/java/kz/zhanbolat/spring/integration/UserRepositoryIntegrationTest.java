@@ -9,10 +9,10 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Testcontainers
 @SpringJUnitConfig(TestConfig.class)
@@ -37,7 +37,7 @@ public class UserRepositoryIntegrationTest {
     @Test
     @Transactional
     public void shouldReturnTrue_whenCreateUser_givenNewUser() {
-        final boolean isCreated = userRepository.createUser(new User(5L, "user5"));
+        final boolean isCreated = userRepository.createUser(new User(5L, "user5", new BigDecimal(1_000)));
 
         assertTrue(isCreated);
     }
@@ -45,7 +45,7 @@ public class UserRepositoryIntegrationTest {
     @Test
     @Transactional
     public void shouldReturnFalse_whenCreateUser_givenUserWithExistingId() {
-        final boolean isCreated = userRepository.createUser(new User(1L, "user2"));
+        final boolean isCreated = userRepository.createUser(new User(1L, "user2", new BigDecimal(1_000)));
 
         assertFalse(isCreated);
     }
@@ -62,5 +62,23 @@ public class UserRepositoryIntegrationTest {
         final Optional<User> user = userRepository.getUserByTicketId(100L);
 
         assertFalse(user.isPresent());
+    }
+
+    @Test
+    @Transactional
+    public void shouldReturnTrue_whenUpdateUser() {
+        final User testUser = new User(1L, "test_user", new BigDecimal(100));
+
+        final boolean isUpdated = userRepository.updateUser(testUser);
+
+        assertTrue(isUpdated);
+    }
+
+    @Test
+    @Transactional
+    public void shouldReturnFalse_whenUpdateNotExistingUser() {
+        final boolean isUpdated = userRepository.updateUser(new User(6L, "user6", new BigDecimal(1_000)));
+
+        assertFalse(isUpdated);
     }
 }

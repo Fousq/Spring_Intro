@@ -1,8 +1,10 @@
 package kz.zhanbolat.spring.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -13,9 +15,17 @@ public class Event {
     @Id
     private Long id;
     private String name;
+    @Column(name = "ticket_price", nullable = false)
+    private BigDecimal ticketPrice;
 
     @OneToMany(targetEntity = Ticket.class, mappedBy = "event")
     private List<Ticket> tickets = new ArrayList<>();
+
+    public Event(Long id, String name, BigDecimal ticketPrice) {
+        this.id = id;
+        this.name = name;
+        this.ticketPrice = ticketPrice;
+    }
 
     public Event(Long id, String name) {
         this.id = id;
@@ -43,6 +53,14 @@ public class Event {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public BigDecimal getTicketPrice() {
+        return ticketPrice;
+    }
+
+    public void setTicketPrice(BigDecimal ticketPrice) {
+        this.ticketPrice = ticketPrice;
     }
 
     public List<Ticket> getTickets() {

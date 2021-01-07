@@ -5,6 +5,7 @@ import kz.zhanbolat.spring.repository.UserRepository;
 import kz.zhanbolat.spring.service.UserService;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 public class UserServiceImpl implements UserService {
@@ -30,6 +31,21 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("The id cannot be below 1.");
         }
         return userRepository.getUser(id);
+    }
+
+    @Override
+    @Transactional
+    public void refillAccount(Long id, BigDecimal amount) {
+        if (amount.compareTo(BigDecimal.valueOf(0)) <= 0) {
+            throw new IllegalArgumentException("Amount to add to user account cannot be below or equal to 0");
+        }
+        final Optional<User> user = userRepository.getUser(id);
+        if (!user.isPresent()) {
+            throw new IllegalArgumentException("No user with such id: " + id);
+        }
+        BigDecimal totalBalance = user.get().getBalance().add(amount);
+        user.get().setBalance(totalBalance);
+        userRepository.updateUser(user.get());
     }
 
     public void setUserRepository(UserRepository userRepository) {

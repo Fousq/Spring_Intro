@@ -4,6 +4,7 @@ import kz.zhanbolat.spring.entity.Event;
 import kz.zhanbolat.spring.entity.Ticket;
 import kz.zhanbolat.spring.entity.User;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,4 +19,5 @@ public interface BookingFacade {
     boolean cancelBooking(Long userId, Ticket ticket);
     List<Ticket> getBookedTickets(User user, int pageSize, int pageNum);
     void preloadTickets(String filePath);
+    void refillAccount(Long id, BigDecimal amount);
 }

@@ -1,1 +1,1 @@
-insert into event(id, name) values (1, 'event1');
+insert into event(id, name, ticket_price) values (1, 'event1', 100.0);
