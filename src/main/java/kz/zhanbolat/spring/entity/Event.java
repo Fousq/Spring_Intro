@@ -9,7 +9,7 @@ import java.util.Objects;
 
 @javax.persistence.Entity
 @Table(name = "event")
-public class Event implements Entity {
+public class Event {
     @Id
     private Long id;
     private String name;

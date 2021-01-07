@@ -14,7 +14,7 @@ import java.util.Objects;
 @Table(name = "ticket")
 @XmlRootElement(name = "ticket")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-public class Ticket implements Entity {
+public class Ticket {
     @Id
     private Long id;
     @ManyToOne(targetEntity = User.class)

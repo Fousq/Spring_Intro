@@ -12,7 +12,7 @@ import java.util.Objects;
 @javax.persistence.Entity
 @Table(name = "user_account")
 @XmlAccessorType(XmlAccessType.NONE)
-public class User implements Entity {
+public class User {
     @Id
     private Long id;
     private String username;
