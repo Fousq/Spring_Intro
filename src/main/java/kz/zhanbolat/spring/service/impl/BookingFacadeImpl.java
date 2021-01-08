@@ -32,8 +32,8 @@ public class BookingFacadeImpl implements BookingFacade {
     }
 
     @Override
-    public boolean createUser(User user) {
-        return userService.createUser(user);
+    public User saveUser(User user) {
+        return userService.saveUser(user);
     }
 
     @Override
@@ -82,9 +82,10 @@ public class BookingFacadeImpl implements BookingFacade {
         }
         ticket.get().setUser(user.get());
         ticket.get().setBooked(true);
-        boolean isBooked = ticketService.updateTicket(ticket.get());
+        ticketService.updateTicket(ticket.get());
         user.get().setBalance(user.get().getBalance().subtract(event.get().getTicketPrice()));
-        return isBooked && userService.updateUser(user.get());
+        userService.saveUser(user.get());
+        return true;
     }
 
     @Override

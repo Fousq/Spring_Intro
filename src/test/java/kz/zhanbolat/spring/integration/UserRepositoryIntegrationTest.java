@@ -22,63 +22,47 @@ public class UserRepositoryIntegrationTest {
 
     @Test
     public void shouldReturnUser_given1AsId() {
-        final Optional<User> user = userRepository.getUser(1L);
+        final Optional<User> user = userRepository.findById(1L);
 
         assertTrue(user.isPresent());
     }
 
     @Test
     public void shouldReturnEmpty_givenNotExistingId() {
-        final Optional<User> user = userRepository.getUser(100L);
+        final Optional<User> user = userRepository.findById(100L);
 
         assertFalse(user.isPresent());
     }
 
     @Test
     @Transactional
-    public void shouldReturnTrue_whenCreateUser_givenNewUser() {
-        final boolean isCreated = userRepository.createUser(new User(5L, "user5", new BigDecimal(1_000)));
+    public void shouldReturnSavedUser_whenSaveUser_givenNewUser() {
+        final User user = new User(5L, "user5", new BigDecimal(1_000));
+        final User savedUser = userRepository.save(user);
 
-        assertTrue(isCreated);
+        assertEquals(user, savedUser);
     }
 
     @Test
     @Transactional
-    public void shouldReturnFalse_whenCreateUser_givenUserWithExistingId() {
-        final boolean isCreated = userRepository.createUser(new User(1L, "user2", new BigDecimal(1_000)));
+    public void shouldReturnSavedUser_whenSaveUser_givenExistingUser() {
+        final User user = new User(1L, "user5", new BigDecimal(1_000));
+        final User savedUser = userRepository.save(user);
 
-        assertFalse(isCreated);
+        assertEquals(user, savedUser);
     }
 
     @Test
     public void shouldReturnUser_givenExistingTicketId() {
-        final Optional<User> user = userRepository.getUserByTicketId(2L);
+        final Optional<User> user = userRepository.findByTicketId(2L);
 
         assertTrue(user.isPresent());
     }
 
     @Test
     public void shouldReturnEmpty_givenNotExistingTicketId() {
-        final Optional<User> user = userRepository.getUserByTicketId(100L);
+        final Optional<User> user = userRepository.findByTicketId(100L);
 
         assertFalse(user.isPresent());
-    }
-
-    @Test
-    @Transactional
-    public void shouldReturnTrue_whenUpdateUser() {
-        final User testUser = new User(1L, "test_user", new BigDecimal(100));
-
-        final boolean isUpdated = userRepository.updateUser(testUser);
-
-        assertTrue(isUpdated);
-    }
-
-    @Test
-    @Transactional
-    public void shouldReturnFalse_whenUpdateNotExistingUser() {
-        final boolean isUpdated = userRepository.updateUser(new User(6L, "user6", new BigDecimal(1_000)));
-
-        assertFalse(isUpdated);
     }
 }

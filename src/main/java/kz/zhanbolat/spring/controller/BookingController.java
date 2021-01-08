@@ -49,12 +49,7 @@ public class BookingController {
 
     @PostMapping("/user/create")
     public String createUser(@ModelAttribute("user") User user, Model model) {
-        boolean isCreated = bookingFacade.createUser(user);
-        if (!isCreated) {
-            model.addAttribute("errorMsg",
-                    "Cannot create user with id - " + user.getId() + ", username - " + user.getUsername());
-            return "redirect:/user/create";
-        }
+        bookingFacade.saveUser(user);
         return "redirect:/user/" + user.getId();
     }
 

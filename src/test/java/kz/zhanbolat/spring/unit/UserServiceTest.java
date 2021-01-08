@@ -25,7 +25,7 @@ public class UserServiceTest {
 
     @Test
     public void shouldReturnUser_whenPassExistedUserId() {
-        when(userRepository.getUser(anyLong())).thenReturn(Optional.of(new User(1L, "test")));
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(new User(1L, "test")));
         final Optional<User> user = userService.getUser(1L);
 
         assertTrue(user.isPresent());
@@ -35,7 +35,7 @@ public class UserServiceTest {
 
     @Test
     public void shouldReturnEmpty_whenPassNonExistedUserId() {
-        when(userRepository.getUser(anyLong())).thenReturn(Optional.empty());
+        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
         final Optional<User> user = userService.getUser(1L);
 
         assertFalse(user.isPresent());
@@ -51,7 +51,7 @@ public class UserServiceTest {
 
     @Test
     public void shouldReturnUser_whenPassTicketId() {
-        when(userRepository.getUserByTicketId(anyLong())).thenReturn(Optional.of(new User(1L, "test")));
+        when(userRepository.findByTicketId(anyLong())).thenReturn(Optional.of(new User(1L, "test")));
 
         final Optional<User> user = userService.getUserByTicketId(1L);
 
@@ -62,7 +62,7 @@ public class UserServiceTest {
 
     @Test
     public void shouldReturnEmpty_whenPassNonExistedTicketId() {
-        when(userRepository.getUserByTicketId(anyLong())).thenReturn(Optional.empty());
+        when(userRepository.findByTicketId(anyLong())).thenReturn(Optional.empty());
 
         final Optional<User> user = userService.getUserByTicketId(1L);
 
@@ -82,8 +82,8 @@ public class UserServiceTest {
         BigDecimal amount = new BigDecimal(100);
         final User user = new User(1L, "test", new BigDecimal(100));
         User updatedUser = new User(user.getId(), user.getUsername(), user.getBalance().add(amount));
-        when(userRepository.getUser(anyLong())).thenReturn(Optional.of(user));
-        when(userRepository.updateUser(updatedUser)).thenReturn(true);
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+        when(userRepository.save(updatedUser)).thenReturn(user);
 
         userService.refillAccount(1L, amount);
     }
@@ -98,7 +98,7 @@ public class UserServiceTest {
 
     @Test
     public void shouldThrowException_whenNotFindUserWithGivenId() {
-        when(userRepository.getUser(anyLong())).thenReturn(Optional.empty());
+        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(IllegalArgumentException.class, () -> userService.refillAccount(1L, new BigDecimal(1)));
     }

@@ -45,7 +45,7 @@ public class BookingFacadeTest {
         when(ticketService.getUnbookedTicketsForEvent(anyLong())).thenReturn(Collections.singletonList(ticket));
         when(ticketService.getTicket(anyLong())).thenReturn(Optional.of(ticket));
         when(ticketService.updateTicket(ticket)).thenReturn(true);
-        when(userService.updateUser(new User(1L, "test", BigDecimal.ZERO))).thenReturn(true);
+        when(userService.saveUser(new User(1L, "test", BigDecimal.ZERO))).thenReturn(new User(1L, "test", BigDecimal.ZERO));
 
         boolean isTicketBooked = bookingFacade.bookTicket(1L, 1L);
 

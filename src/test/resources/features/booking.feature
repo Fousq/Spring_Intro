@@ -3,7 +3,7 @@ Feature: booking facade scenarios
   Scenario Outline: Create user
     Given Provide "<id>" and "<username>"
     When Need to create user
-    Then Create user with provided user "<id>"
+    Then Check saved user
     Examples:
       | id | username |
       | 3  | user_3   |
