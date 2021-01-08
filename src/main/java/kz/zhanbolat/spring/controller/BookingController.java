@@ -7,6 +7,8 @@ import kz.zhanbolat.spring.entity.Ticket;
 import kz.zhanbolat.spring.entity.User;
 import kz.zhanbolat.spring.exception.EntityNotFoundException;
 import kz.zhanbolat.spring.service.BookingFacade;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +22,7 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/")
 public class BookingController {
+    private static final Logger logger = LoggerFactory.getLogger(BookingController.class);
     @Autowired
     private BookingFacade bookingFacade;
 
@@ -30,29 +33,33 @@ public class BookingController {
     }
 
     @GetMapping("/user/create")
-    public String createUserPage() {
+    public String createUserPage(Model model) {
+        model.addAttribute("user", new User());
         return "create_user";
     }
 
     @GetMapping("/event/create")
-    public String createEventPage() {
+    public String createEventPage(Model model) {
+        model.addAttribute("event", new Event());
         return "create_event";
     }
 
     @GetMapping("/ticket/create")
-    public String createTicketPage() {
+    public String createTicketPage(Model model) {
+        model.addAttribute("ticket", new Ticket());
         return "create_ticket";
     }
 
     @PostMapping("/user/create")
     public String createUser(@ModelAttribute("user") User user, Model model) {
+        logger.info("POST create user " + user);
         boolean isCreated = bookingFacade.createUser(user);
         if (!isCreated) {
             model.addAttribute("errorMsg",
                     "Cannot create user with id - " + user.getId() + ", username - " + user.getUsername());
-            return "forward:/user/create";
+            return "redirect:/user/create";
         }
-        return "forward:/user/" + user.getId();
+        return "redirect:/user/" + user.getId();
     }
 
     @PostMapping("/event/create")
@@ -61,9 +68,9 @@ public class BookingController {
         if (!isCreated) {
             model.addAttribute("errorMsg",
                     "Cannot create event with id - " + event.getId() + ", name - " + event.getName());
-            return "forward:/event/create";
+            return "redirect:/event/create";
         }
-        return "forward:/event/" + event.getId();
+        return "redirect:/event/" + event.getId();
     }
 
     @PostMapping("/ticket/create")
@@ -72,9 +79,9 @@ public class BookingController {
         if (!isCreated) {
             model.addAttribute("errorMsg",
                     "Cannot create ticket with id - " + ticket.getId() + ", event id - " + ticket.getEventId());
-            return "forward:/ticket/create";
+            return "redirect:/ticket/create";
         }
-        return "forward:/ticket/" + ticket.getId();
+        return "redirect:/ticket/" + ticket.getId();
     }
 
     @GetMapping("/user/{userId}")
@@ -108,7 +115,8 @@ public class BookingController {
     }
 
     @GetMapping("/book")
-    public String bookTicketPage() {
+    public String bookTicketPage(Model model) {
+        model.addAttribute("bookModel", new BookUnbookDto());
         return "bookTicket";
     }
 
@@ -118,7 +126,7 @@ public class BookingController {
         if (!isBooked) {
             model.addAttribute("errorMsg", "Ticket cannot be booked with id - "
                     + bookUnbookDto.getTicketId() + " by user with id - " + bookUnbookDto.getUserId());
-            return "forward:/book";
+            return "redirect:/book";
         }
         model.addAttribute("successMsg", "Booking of ticket with id - "
                 + bookUnbookDto.getTicketId() + " has been performed successfully for user with id - "
@@ -127,7 +135,8 @@ public class BookingController {
     }
 
     @GetMapping("/cancel")
-    public String cancelBookingPage() {
+    public String cancelBookingPage(Model model) {
+        model.addAttribute("unbookModel", new BookUnbookDto());
         return "cancelBooking";
     }
 
@@ -138,7 +147,7 @@ public class BookingController {
             model.addAttribute("errorMsg",
                     "Booking of ticket cannot be canceled with id - " + bookUnbookDto.getTicketId()
                             +" by user with id - " + bookUnbookDto.getUserId());
-            return "forward:/cancel";
+            return "redirect:/cancel";
         }
         model.addAttribute("successMsg",
                 "Canceling of ticket booking with id - " + bookUnbookDto.getTicketId()

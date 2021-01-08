@@ -6,7 +6,7 @@
 </head>
 <body>
     <h1>Book ticket for user:</h1><br>
-    <form action="#" th:action="@{/action}" th:object="bookModel" method="post">
+    <form action="#" th:action="@{/action}" th:object="${bookModel}" method="post">
         <label for="userId">User id: </label>
         <input type="number" id="userId" th:field="*{userId}" required><br>
         <label for="ticketId">Ticket id: </label>

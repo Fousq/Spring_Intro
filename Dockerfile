@@ -2,7 +2,7 @@ FROM gradle:6.7.1-jdk8-hotspot
 
 WORKDIR ./
 COPY ./ ./
-RUN gradle build
+RUN gradle clean build
 
 FROM tomcat:9
 

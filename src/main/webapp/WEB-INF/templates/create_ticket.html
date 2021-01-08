@@ -9,12 +9,8 @@
     <form action="#" th:action="@{/create/ticket}" th:object="${ticket}" method="post">
         <label for="ticketId">Ticket id:</label>
         <input type="number" id="ticketId" th:field="*{id}" required><br>
-        <label for="ticketUserId">Ticket user id(optional):</label>
-        <input type="number" id="ticketUserId" th:field="*{userId}" required><br>
         <label for="ticketEventId">Ticket event id:</label>
         <input type="number" id="ticketEventId" th:field="*{eventId}" required><br>
-        <label for="ticketBooked">Ticket booked(Not booked by default):</label>
-        <input type="number" id="ticketBooked" th:field="*{isBooked}"><br>
         <button>Create</button>
     </form>
 </body>

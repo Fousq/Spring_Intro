@@ -42,8 +42,8 @@ public class BookingControllerIntegrationTest {
                 .param("id", "4")
                 .param("username", "user4")
                 .flashAttr("user", new User()))
-                .andExpect(forwardedUrl("/user/4"))
-                .andExpect(status().isOk()).andReturn();
+                .andExpect(redirectedUrl("/user/4"))
+                .andExpect(status().is3xxRedirection()).andReturn();
     }
 
     @Test
@@ -52,8 +52,8 @@ public class BookingControllerIntegrationTest {
                 .param("id", "1")
                 .param("username", "username")
                 .flashAttr("user", new User()))
-                .andExpect(forwardedUrl("/user/create"))
-                .andExpect(status().isOk());
+                .andExpect(redirectedUrlPattern("/user/create*"))
+                .andExpect(status().is3xxRedirection());
     }
 
     @Test
@@ -62,8 +62,8 @@ public class BookingControllerIntegrationTest {
                 .param("id", "5")
                 .param("name", "event name")
                 .flashAttr("event", new Event()))
-                .andExpect(forwardedUrl("/event/5"))
-                .andExpect(status().isOk());
+                .andExpect(redirectedUrl("/event/5"))
+                .andExpect(status().is3xxRedirection());
     }
 
     @Test
@@ -72,8 +72,8 @@ public class BookingControllerIntegrationTest {
                 .param("id", "1")
                 .param("name", "event name")
                 .flashAttr("event", new Event()))
-                .andExpect(forwardedUrl("/event/create"))
-                .andExpect(status().isOk());
+                .andExpect(redirectedUrlPattern("/event/create*"))
+                .andExpect(status().is3xxRedirection());
     }
 
     @Test
@@ -82,8 +82,8 @@ public class BookingControllerIntegrationTest {
                 .param("id", "8")
                 .param("eventId", "1")
                 .flashAttr("ticket", new Ticket()))
-                .andExpect(forwardedUrl("/ticket/8"))
-                .andExpect(status().isOk());
+                .andExpect(redirectedUrl("/ticket/8"))
+                .andExpect(status().is3xxRedirection());
     }
 
     @Test
@@ -92,8 +92,8 @@ public class BookingControllerIntegrationTest {
                 .param("id", "1")
                 .param("eventId", "1")
                 .flashAttr("ticket", new Ticket()))
-                .andExpect(forwardedUrl("/ticket/create"))
-                .andExpect(status().isOk());
+                .andExpect(redirectedUrlPattern("/ticket/create*"))
+                .andExpect(status().is3xxRedirection());
     }
 
     @Test
@@ -176,8 +176,8 @@ public class BookingControllerIntegrationTest {
                 .param("userId", "1")
                 .param("ticketId", "3")
                 .flashAttr("bookModel", new BookUnbookDto()))
-                .andExpect(forwardedUrl("/book"))
-                .andExpect(status().isOk());
+                .andExpect(redirectedUrlPattern("/book*"))
+                .andExpect(status().is3xxRedirection());
     }
 
     @Test
@@ -201,7 +201,7 @@ public class BookingControllerIntegrationTest {
                 .param("userId", "1")
                 .param("ticketId", "4")
                 .flashAttr("unbookModel", new BookUnbookDto()))
-                .andExpect(forwardedUrl("/cancel"))
-                .andExpect(status().isOk());
+                .andExpect(redirectedUrlPattern("/cancel*"))
+                .andExpect(status().is3xxRedirection());
     }
 }
