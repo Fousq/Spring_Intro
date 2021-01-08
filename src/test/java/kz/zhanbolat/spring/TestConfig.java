@@ -82,15 +82,6 @@ public class TestConfig {
         return properties;
     }
 
-//    @Bean
-//    public LocalSessionFactoryBean sessionFactory(DataSource dataSource) {
-//        LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
-//        sessionFactoryBean.setDataSource(dataSource);
-//        sessionFactoryBean.setHibernateProperties(hibernateProperties());
-//        sessionFactoryBean.setPackagesToScan("kz.zhanbolat.spring.entity");
-//        return sessionFactoryBean;
-//    }
-
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
@@ -109,9 +100,4 @@ public class TestConfig {
         txManager.setEntityManagerFactory(entityManagerFactory);
         return txManager;
     }
-
-//    @Bean
-//    public TransactionManager transactionManager(LocalSessionFactoryBean sessionFactory) {
-//        return new HibernateTransactionManager(sessionFactory.getObject());
-//    }
 }
