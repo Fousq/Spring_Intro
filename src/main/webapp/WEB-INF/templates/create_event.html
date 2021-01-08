@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Create event</title>
+</head>
+<body>
+    <h1>Create event:</h1><br>
+    <form action="#" th:action="@{/event/create}" th:object="${event}" method="post">
+        <label for="eventId">Event id: </label>
+        <input type="number" id="eventId" th:field="*{id}" required><br>
+        <label for="name">Event name: </label>
+        <input type="text" id="name" th:field="*{name}" required><br>
+        <button>Create</button>
+    </form>
+</body>
+</html>

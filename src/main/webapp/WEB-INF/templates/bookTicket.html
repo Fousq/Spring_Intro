@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book ticket</title>
+</head>
+<body>
+    <h1>Book ticket for user:</h1><br>
+    <form action="#" th:action="@{/action}" th:object="${bookModel}" method="post">
+        <label for="userId">User id: </label>
+        <input type="number" id="userId" th:field="*{userId}" required><br>
+        <label for="ticketId">Ticket id: </label>
+        <input type="number" id="ticketId" th:field="*{ticketId}" required><br>
+        <button>Book</button>
+    </form>
+</body>
+</html>

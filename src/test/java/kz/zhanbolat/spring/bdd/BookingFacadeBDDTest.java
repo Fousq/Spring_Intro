@@ -94,7 +94,7 @@ public class BookingFacadeBDDTest {
 
     @When("Need to book ticket")
     public void needToBookTicket() {
-        isBooked = bookingFacade.bookTicket(user.getId(), ticket);
+        isBooked = bookingFacade.bookTicket(user.getId(), ticket.getId());
     }
 
     @Then("Book the ticket {string} successfully")
@@ -114,7 +114,7 @@ public class BookingFacadeBDDTest {
 
     @When("Need to cancel the booking")
     public void needToCancelTheBooking() {
-        isCanceled = bookingFacade.cancelBooking(user.getId(), ticket);
+        isCanceled = bookingFacade.cancelBooking(user.getId(), ticket.getId());
     }
 
     @Then("Cancel the booking of ticket {string} successfully")

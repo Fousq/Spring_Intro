@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create ticket</title>
+</head>
+<body>
+    <h1>Create ticket:</h1><br>
+    <form action="#" th:action="@{/create/ticket}" th:object="${ticket}" method="post">
+        <label for="ticketId">Ticket id:</label>
+        <input type="number" id="ticketId" th:field="*{id}" required><br>
+        <label for="ticketEventId">Ticket event id:</label>
+        <input type="number" id="ticketEventId" th:field="*{eventId}" required><br>
+        <button>Create</button>
+    </form>
+</body>
+</html>
