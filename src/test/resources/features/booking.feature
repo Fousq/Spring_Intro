@@ -11,7 +11,7 @@ Feature: booking facade scenarios
   Scenario Outline: Create event
     Given Provide event "<id>" and event "<name>"
     When Need to create event
-    Then Create event with provided "<id>"
+    Then Check saved event
     Examples:
       | id | name    |
       | 3  | event_3 |

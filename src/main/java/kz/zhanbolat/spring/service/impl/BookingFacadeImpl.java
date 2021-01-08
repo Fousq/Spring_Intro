@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -38,8 +37,8 @@ public class BookingFacadeImpl implements BookingFacade {
     }
 
     @Override
-    public boolean createEvent(Event event) {
-        return eventService.createEvent(event);
+    public Event saveEvent(Event event) {
+        return eventService.saveEvent(event);
     }
 
     @Override

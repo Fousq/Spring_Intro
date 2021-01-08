@@ -7,14 +7,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class EventServiceImpl implements EventService {
     private EventRepository eventRepository;
 
     @Override
     @Transactional
-    public boolean createEvent(Event event) {
-        return eventRepository.createEvent(event);
+    public Event saveEvent(Event event) {
+        return eventRepository.save(event);
     }
 
     @Override
@@ -22,12 +24,12 @@ public class EventServiceImpl implements EventService {
         if (id < 1) {
             throw new IllegalArgumentException("The id cannot be below 1.");
         }
-        return eventRepository.getEvent(id);
+        return eventRepository.findById(id);
     }
 
     @Override
     public List<Event> getEvents() {
-        return eventRepository.getEvents();
+        return StreamSupport.stream(eventRepository.findAll().spliterator(), false).collect(Collectors.toList());
     }
 
     public void setEventRepository(EventRepository eventRepository) {

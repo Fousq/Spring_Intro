@@ -25,6 +25,7 @@ public class BookingFacadeBDDTest {
     private User user;
     private Event event;
     private Ticket ticket;
+    private Event createdEvent;
     private boolean isCreated;
     private boolean isBooked;
     private boolean isCanceled;
@@ -54,15 +55,12 @@ public class BookingFacadeBDDTest {
 
     @When("Need to create event")
     public void needToCreateEvent() {
-        isCreated = bookingFacade.createEvent(event);
+        createdEvent = bookingFacade.saveEvent(event);
     }
 
-    @Then("Create event with provided {string}")
-    public void createEventWithProvidedIdAndName(String id) {
-        assertTrue(isCreated);
-        Optional<Event> createdEvent = bookingFacade.getEvent(Long.parseLong(id));
-        assertTrue(createdEvent.isPresent());
-        assertEquals(event, createdEvent.get());
+    @Then("Check saved event")
+    public void createEventWithProvidedIdAndName() {
+        assertEquals(event, createdEvent);
     }
 
     @Given("Provide ticket {string} and event {string}")

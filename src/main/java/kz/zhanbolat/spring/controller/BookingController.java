@@ -60,13 +60,8 @@ public class BookingController {
 
     @PostMapping("/event/create")
     public String createEvent(@ModelAttribute("event") Event event, Model model) {
-        boolean isCreated = bookingFacade.createEvent(event);
-        if (!isCreated) {
-            model.addAttribute("errorMsg",
-                    "Cannot create event with id - " + event.getId() + ", name - " + event.getName());
-            return "redirect:/event/create";
-        }
-        return "redirect:/event/" + event.getId();
+        Event savedEvent = bookingFacade.saveEvent(event);
+        return "redirect:/event/" + savedEvent.getId();
     }
 
     @PostMapping("/ticket/create")

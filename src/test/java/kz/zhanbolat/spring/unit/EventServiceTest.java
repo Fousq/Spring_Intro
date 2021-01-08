@@ -24,7 +24,7 @@ public class EventServiceTest {
 
     @Test
     public void shouldReturnEvent_whenPassId() {
-        when(eventRepository.getEvent(anyLong())).thenReturn(Optional.of(new Event(1L, "test")));
+        when(eventRepository.findById(anyLong())).thenReturn(Optional.of(new Event(1L, "test")));
 
         final Optional<Event> event = eventService.getEvent(1L);
 
@@ -35,7 +35,7 @@ public class EventServiceTest {
 
     @Test
     public void shouldReturnEmpty_whenPassNonExistedId() {
-        when(eventRepository.getEvent(anyLong())).thenReturn(Optional.empty());
+        when(eventRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         final Optional<Event> event = eventService.getEvent(1L);
 

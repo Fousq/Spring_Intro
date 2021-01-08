@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface BookingFacade {
     boolean createUser(User user);
-    boolean createEvent(Event event);
+    Event saveEvent(Event event);
     boolean createTicket(Ticket ticket);
     Optional<User> getUser(Long id);
     Optional<Event> getEvent(Long id);

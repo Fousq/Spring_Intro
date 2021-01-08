@@ -7,14 +7,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
-import org.springframework.orm.hibernate5.HibernateTransactionManager;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
-import org.springframework.transaction.TransactionManager;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.DockerImageName;
 
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.Properties;
 
@@ -22,6 +26,7 @@ import java.util.Properties;
 @ImportResource("classpath:spring-test-context.xml")
 @ComponentScan(basePackages = "kz.zhanbolat.spring.repository.impl")
 @EnableTransactionManagement
+@EnableJpaRepositories
 // todo: think about profiling
 public class TestConfig {
 
@@ -77,17 +82,36 @@ public class TestConfig {
         return properties;
     }
 
+//    @Bean
+//    public LocalSessionFactoryBean sessionFactory(DataSource dataSource) {
+//        LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
+//        sessionFactoryBean.setDataSource(dataSource);
+//        sessionFactoryBean.setHibernateProperties(hibernateProperties());
+//        sessionFactoryBean.setPackagesToScan("kz.zhanbolat.spring.entity");
+//        return sessionFactoryBean;
+//    }
+
     @Bean
-    public LocalSessionFactoryBean sessionFactory(DataSource dataSource) {
-        LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
-        sessionFactoryBean.setDataSource(dataSource);
-        sessionFactoryBean.setHibernateProperties(hibernateProperties());
-        sessionFactoryBean.setPackagesToScan("kz.zhanbolat.spring.entity");
-        return sessionFactoryBean;
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
+        HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+        vendorAdapter.setGenerateDdl(true);
+
+        LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
+        factory.setJpaVendorAdapter(vendorAdapter);
+        factory.setPackagesToScan("kz.zhanbolat.spring.entity");
+        factory.setDataSource(dataSource);
+        return factory;
     }
 
     @Bean
-    public TransactionManager transactionManager(LocalSessionFactoryBean sessionFactory) {
-        return new HibernateTransactionManager(sessionFactory.getObject());
+    public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+        JpaTransactionManager txManager = new JpaTransactionManager();
+        txManager.setEntityManagerFactory(entityManagerFactory);
+        return txManager;
     }
+
+//    @Bean
+//    public TransactionManager transactionManager(LocalSessionFactoryBean sessionFactory) {
+//        return new HibernateTransactionManager(sessionFactory.getObject());
+//    }
 }
