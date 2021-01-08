@@ -14,8 +14,8 @@ public interface BookingFacade {
     Optional<User> getUser(int id);
     Optional<Event> getEvent(int id);
     Optional<Ticket> getTicket(int id);
-    boolean bookTicket(int userId, Ticket ticket);
-    boolean cancelBooking(int userId, Ticket ticket);
+    boolean bookTicket(int userId, int ticketId);
+    boolean cancelBooking(int userId, int ticketId);
     List<Ticket> getBookedTickets(User user, int pageSize, int pageNum);
     void preloadTickets(String filePath);
 }

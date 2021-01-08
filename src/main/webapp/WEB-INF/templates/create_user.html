@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User create</title>
+</head>
+<body>
+    <h1>Create user:</h1><br>
+    <form action="#" th:action="@{/user/create}" th:object="${user}" method="post">
+        <label for="userId">User id: </label>
+        <input id="userId" type="number" th:field="*{id}" required><br>
+        <label for="username">Username: </label>
+        <input id="username" type="text" th:field="*{username}" required><br>
+        <button>Create</button>
+    </form>
+</body>
+</html>

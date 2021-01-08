@@ -1,5 +1,7 @@
 package kz.zhanbolat.spring.controller;
 
+import kz.zhanbolat.spring.config.view.PdfView;
+import kz.zhanbolat.spring.controller.model.BookUnbookDto;
 import kz.zhanbolat.spring.entity.Event;
 import kz.zhanbolat.spring.entity.Ticket;
 import kz.zhanbolat.spring.entity.User;
@@ -43,36 +45,36 @@ public class BookingController {
     }
 
     @PostMapping("/user/create")
-    public String createUser(@RequestAttribute Integer userId, @RequestAttribute String username, Model model) {
-        boolean isCreated = bookingFacade.createUser(new User(userId, username));
+    public String createUser(@ModelAttribute("user") User user, Model model) {
+        boolean isCreated = bookingFacade.createUser(user);
         if (!isCreated) {
             model.addAttribute("errorMsg",
-                    "Cannot create user with id - " + userId + ", username - " + username);
+                    "Cannot create user with id - " + user.getId() + ", username - " + user.getUsername());
             return "forward:/user/create";
         }
-        return "forward:/user/" + userId;
+        return "forward:/user/" + user.getId();
     }
 
     @PostMapping("/event/create")
-    public String createEvent(@RequestAttribute Integer eventId, @RequestAttribute String eventName, Model model) {
-        boolean isCreated = bookingFacade.createEvent(new Event(eventId, eventName));
+    public String createEvent(@ModelAttribute("event") Event event, Model model) {
+        boolean isCreated = bookingFacade.createEvent(event);
         if (!isCreated) {
             model.addAttribute("errorMsg",
-                    "Cannot create event with id - " + eventId + ", name - " + eventName);
+                    "Cannot create event with id - " + event.getId() + ", name - " + event.getName());
             return "forward:/event/create";
         }
-        return "forward:/event/" + eventId;
+        return "forward:/event/" + event.getId();
     }
 
     @PostMapping("/ticket/create")
-    public String createTicket(@RequestAttribute Integer ticketId, @RequestAttribute Integer eventId, Model model) {
-        boolean isCreated = bookingFacade.createTicket(Ticket.builder().setId(ticketId).setEventId(eventId).build());
+    public String createTicket(@ModelAttribute("ticket") Ticket ticket, Model model) {
+        boolean isCreated = bookingFacade.createTicket(ticket);
         if (!isCreated) {
             model.addAttribute("errorMsg",
-                    "Cannot create ticket with id - " + ticketId + ", event id - " + eventId);
+                    "Cannot create ticket with id - " + ticket.getId() + ", event id - " + ticket.getEventId());
             return "forward:/ticket/create";
         }
-        return "forward:/ticket/" + ticketId;
+        return "forward:/ticket/" + ticket.getId();
     }
 
     @GetMapping("/user/{userId}")
@@ -111,17 +113,16 @@ public class BookingController {
     }
 
     @PostMapping("/book")
-    public String bookTicket(@RequestAttribute Integer userId, @RequestAttribute Integer ticketId,
-                             @RequestAttribute Integer eventId, Model model) {
-        final boolean isBooked = bookingFacade.bookTicket(userId, Ticket.builder().setId(ticketId).setEventId(eventId).build());
+    public String bookTicket(@ModelAttribute("bookModel") BookUnbookDto bookUnbookDto, Model model) {
+        final boolean isBooked = bookingFacade.bookTicket(bookUnbookDto.getUserId(), bookUnbookDto.getTicketId());
         if (!isBooked) {
-            model.addAttribute("errorMsg",
-                    "Ticket cannot be booked with id - " + ticketId + ", event id - " + eventId
-                            + " by user with id - " + userId);
+            model.addAttribute("errorMsg", "Ticket cannot be booked with id - "
+                    + bookUnbookDto.getTicketId() + " by user with id - " + bookUnbookDto.getUserId());
             return "forward:/book";
         }
-        model.addAttribute("successMsg", "Booking of ticket with id - " + ticketId
-                + ", event id - " + eventId + " has been performed successfully for user with id - " + userId);
+        model.addAttribute("successMsg", "Booking of ticket with id - "
+                + bookUnbookDto.getTicketId() + " has been performed successfully for user with id - "
+                + bookUnbookDto.getUserId());
         return "success";
     }
 
@@ -131,23 +132,23 @@ public class BookingController {
     }
 
     @PostMapping("/cancel")
-    public String cancelBooking(@RequestAttribute Integer userId, @RequestAttribute Integer ticketId,
-                                @RequestAttribute Integer eventId, Model model) {
-        final boolean isCanceled = bookingFacade.cancelBooking(userId,
-                Ticket.builder().setId(ticketId).setEventId(eventId).setUserId(userId).build());
+    public String cancelBooking(@ModelAttribute("unbookModel") BookUnbookDto bookUnbookDto, Model model) {
+        final boolean isCanceled = bookingFacade.cancelBooking(bookUnbookDto.getUserId(), bookUnbookDto.getTicketId());
         if (!isCanceled) {
             model.addAttribute("errorMsg",
-                    "Booking of ticket cannot be canceled with id - " + ticketId + ", event id - " + eventId
-                            + " by user with id - " + userId);
+                    "Booking of ticket cannot be canceled with id - " + bookUnbookDto.getTicketId()
+                            +" by user with id - " + bookUnbookDto.getUserId());
             return "forward:/cancel";
         }
-        model.addAttribute("successMsg", "Canceling of ticket booking with id - " + ticketId
-                + ", event id - " + eventId + " has been performed successfully for user with id - " + userId);
+        model.addAttribute("successMsg",
+                "Canceling of ticket booking with id - " + bookUnbookDto.getTicketId()
+                        + " has been performed successfully for user with id - " + bookUnbookDto.getUserId());
         return "success";
     }
 
     @GetMapping(value = "/ticket/list/booked/{userId}", produces = "application/pdf")
-    public ModelAndView bookedTickets(@PathVariable("userId") Integer userId, @RequestParam(value = "pageSize", defaultValue = "400") Integer pageSize,
+    public ModelAndView bookedTickets(@PathVariable("userId") Integer userId,
+                                      @RequestParam(value = "pageSize", defaultValue = "400") Integer pageSize,
                                       @RequestParam(value = "pageNum", defaultValue = "10") Integer pageNum) {
         Map<String, Object> modelMap = new HashMap<>();
 
@@ -155,7 +156,7 @@ public class BookingController {
         modelMap.put("pageSize", pageSize);
         modelMap.put("pageNum", pageNum);
 
-        return new ModelAndView("pdfView", modelMap);
+        return new ModelAndView(new PdfView(), modelMap);
     }
 
     @ExceptionHandler

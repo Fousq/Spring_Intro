@@ -15,6 +15,9 @@ public class User implements Entity {
         this.id = id;
     }
 
+    public User() {
+    }
+
     public int getId() {
         return id;
     }

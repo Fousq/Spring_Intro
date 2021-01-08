@@ -61,8 +61,8 @@ public class BookingFacadeImpl implements BookingFacade {
     }
 
     @Override
-    public boolean bookTicket(int userId, Ticket ticket) {
-        if (userId < 1 || Objects.isNull(ticket)) {
+    public boolean bookTicket(int userId, int ticketId) {
+        if (userId < 1 || ticketId < 1) {
             throw new IllegalArgumentException("User id or ticket object are not suitable. " +
                     "User id must be above 0, and ticket object should not be null.");
         }
@@ -70,18 +70,18 @@ public class BookingFacadeImpl implements BookingFacade {
         if (!foundedUser.isPresent()) {
             return false;
         }
-        List<Ticket> unbookedTickets = ticketService.getUnbookedTicketsForEvent(ticket.getEventId());
-        if (unbookedTickets.stream().anyMatch(unbookedTicket -> unbookedTicket.getId() == ticket.getId())) {
-            ticket.setUserId(userId);
-            ticket.setBooked(true);
-            return ticketService.updateTicket(ticket);
+        final Optional<Ticket> ticket = ticketService.getTicket(ticketId);
+        if (ticket.get().isBooked()) {
+            return false;
         }
-        return false;
+        ticket.get().setUserId(userId);
+        ticket.get().setBooked(true);
+        return ticketService.updateTicket(ticket.get());
     }
 
     @Override
-    public boolean cancelBooking(int userId, Ticket ticket) {
-        if (userId < 1 || Objects.isNull(ticket)) {
+    public boolean cancelBooking(int userId, int ticketId) {
+        if (userId < 1 || ticketId < 1) {
             throw new IllegalArgumentException("User id or ticket object are not suitable. " +
                     "User id must be above 0, and ticket object should not be null.");
         }
@@ -89,17 +89,15 @@ public class BookingFacadeImpl implements BookingFacade {
         if (!user.isPresent()) {
             return false;
         }
-        final List<Ticket> unbookedTickets = ticketService.getUnbookedTicketsForEvent(ticket.getEventId());
-        for (Ticket unbookedTicket : unbookedTickets) {
-            if (unbookedTicket.getId() == ticket.getId()) {
-                return false;
-            }
+        final Optional<Ticket> ticket = ticketService.getTicket(ticketId);
+        if (!ticket.get().isBooked()) {
+            return false;
         }
-        user = userService.getUserByTicketId(ticket.getId());
+        user = userService.getUserByTicketId(ticketId);
         if (user.isPresent() && user.get().getId() == userId) {
-            ticket.setUserId(0);
-            ticket.setBooked(false);
-            return ticketService.updateTicket(ticket);
+            ticket.get().setUserId(0);
+            ticket.get().setBooked(false);
+            return ticketService.updateTicket(ticket.get());
         }
         return false;
     }

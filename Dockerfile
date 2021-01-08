@@ -4,11 +4,10 @@ WORKDIR ./
 COPY ./ ./
 RUN gradle build
 
-FROM jboss/wildfly:latest
+FROM tomcat:9
 
-RUN /opt/jboss/wildfly/bin/add-user.sh admin 0 --silent
-ADD ./build/libs/app.war /opt/jboss/wildfly/standalone/deployments/
+ADD ./build/libs/app.war /usr/local/tomcat/webapps/
 
-EXPOSE 8080 9990
+EXPOSE 8080 8005
 
-CMD ["/opt/jboss/wildfly/bin/standalone.sh","-c","standalone-full-ha.xml","-b","0.0.0.0","-bmanagement", "0.0.0.0"]
+CMD ["catalina.sh","run"]

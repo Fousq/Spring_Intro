@@ -3,6 +3,10 @@ package kz.zhanbolat.spring.integration;
 import kz.zhanbolat.spring.TestConfig;
 import kz.zhanbolat.spring.config.WebConfig;
 import kz.zhanbolat.spring.controller.BookingController;
+import kz.zhanbolat.spring.controller.model.BookUnbookDto;
+import kz.zhanbolat.spring.entity.Event;
+import kz.zhanbolat.spring.entity.Ticket;
+import kz.zhanbolat.spring.entity.User;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -35,8 +39,9 @@ public class BookingControllerIntegrationTest {
     @Test
     public void shouldCreateUser_andRedirectToUserPage() throws Exception {
         mockMvc.perform(post("/user/create")
-                .requestAttr("userId", 4)
-                .requestAttr("username", "username"))
+                .param("id", "4")
+                .param("username", "user4")
+                .flashAttr("user", new User()))
                 .andExpect(forwardedUrl("/user/4"))
                 .andExpect(status().isOk()).andReturn();
     }
@@ -44,8 +49,9 @@ public class BookingControllerIntegrationTest {
     @Test
     public void shouldNotCreateUser_andRedirectToUserCreatePage() throws Exception {
         mockMvc.perform(post("/user/create")
-                .requestAttr("userId", 1)
-                .requestAttr("username", "username"))
+                .param("id", "1")
+                .param("username", "username")
+                .flashAttr("user", new User()))
                 .andExpect(forwardedUrl("/user/create"))
                 .andExpect(status().isOk());
     }
@@ -53,8 +59,9 @@ public class BookingControllerIntegrationTest {
     @Test
     public void shouldCreateEvent_andRedirectToEventPage() throws Exception {
         mockMvc.perform(post("/event/create")
-                .requestAttr("eventId", 5)
-                .requestAttr("eventName", "event name"))
+                .param("id", "5")
+                .param("name", "event name")
+                .flashAttr("event", new Event()))
                 .andExpect(forwardedUrl("/event/5"))
                 .andExpect(status().isOk());
     }
@@ -62,8 +69,9 @@ public class BookingControllerIntegrationTest {
     @Test
     public void shouldNotCreateEvent_andRedirectToEventCreatePage() throws Exception {
         mockMvc.perform(post("/event/create")
-                .requestAttr("eventId", 1)
-                .requestAttr("eventName", "event name"))
+                .param("id", "1")
+                .param("name", "event name")
+                .flashAttr("event", new Event()))
                 .andExpect(forwardedUrl("/event/create"))
                 .andExpect(status().isOk());
     }
@@ -71,8 +79,9 @@ public class BookingControllerIntegrationTest {
     @Test
     public void shouldCreateTicket_andRedirectToTicketPage() throws Exception {
         mockMvc.perform(post("/ticket/create")
-                .requestAttr("ticketId", 8)
-                .requestAttr("eventId", 1))
+                .param("id", "8")
+                .param("eventId", "1")
+                .flashAttr("ticket", new Ticket()))
                 .andExpect(forwardedUrl("/ticket/8"))
                 .andExpect(status().isOk());
     }
@@ -80,8 +89,9 @@ public class BookingControllerIntegrationTest {
     @Test
     public void shouldNotCreateTicket_andRedirectToTicketCreatePage() throws Exception {
         mockMvc.perform(post("/ticket/create")
-                .requestAttr("ticketId", 1)
-                .requestAttr("eventId", 1))
+                .param("id", "1")
+                .param("eventId", "1")
+                .flashAttr("ticket", new Ticket()))
                 .andExpect(forwardedUrl("/ticket/create"))
                 .andExpect(status().isOk());
     }
@@ -148,24 +158,24 @@ public class BookingControllerIntegrationTest {
     @Test
     public void shouldBookTicketSuccessfully() throws Exception {
         final MvcResult mvcResult = mockMvc.perform(post("/book")
-                .requestAttr("userId", 1)
-                .requestAttr("ticketId", 1)
-                .requestAttr("eventId", 1))
+                .param("userId", "1")
+                .param("ticketId", "1")
+                .flashAttr("bookModel", new BookUnbookDto()))
                 .andExpect(status().isOk())
                 .andReturn();
 
         Document content = Jsoup.parse(mvcResult.getResponse().getContentAsString());
         final Elements elements = content.getElementsByTag("h1");
         assertEquals(1, elements.size());
-        assertEquals("Booking of ticket with id - 1, event id - 1 has been performed successfully for user with id - 1", elements.get(0).text());
+        assertEquals("Booking of ticket with id - 1 has been performed successfully for user with id - 1", elements.get(0).text());
     }
 
     @Test
     public void shouldBookTicketWithFailure() throws Exception {
         mockMvc.perform(post("/book")
-                .requestAttr("userId", 1)
-                .requestAttr("ticketId", 3)
-                .requestAttr("eventId", 1))
+                .param("userId", "1")
+                .param("ticketId", "3")
+                .flashAttr("bookModel", new BookUnbookDto()))
                 .andExpect(forwardedUrl("/book"))
                 .andExpect(status().isOk());
     }
@@ -173,24 +183,24 @@ public class BookingControllerIntegrationTest {
     @Test
     public void shouldCancelBookingSuccessfully() throws Exception {
         final MvcResult mvcResult = mockMvc.perform(post("/cancel")
-                .requestAttr("userId", 2)
-                .requestAttr("ticketId", 2)
-                .requestAttr("eventId", 1))
+                .param("userId", "2")
+                .param("ticketId", "2")
+                .flashAttr("unbookModel", new BookUnbookDto()))
                 .andExpect(status().isOk())
                 .andReturn();
 
         Document content = Jsoup.parse(mvcResult.getResponse().getContentAsString());
         final Elements elements = content.getElementsByTag("h1");
         assertEquals(1, elements.size());
-        assertEquals("Canceling of ticket booking with id - 2, event id - 1 has been performed successfully for user with id - 2", elements.get(0).text());
+        assertEquals("Canceling of ticket booking with id - 2 has been performed successfully for user with id - 2", elements.get(0).text());
     }
 
     @Test
     public void shouldCancelBookingWithFailure() throws Exception {
         mockMvc.perform(post("/cancel")
-                .requestAttr("userId", 1)
-                .requestAttr("ticketId", 4)
-                .requestAttr("eventId", 1))
+                .param("userId", "1")
+                .param("ticketId", "4")
+                .flashAttr("unbookModel", new BookUnbookDto()))
                 .andExpect(forwardedUrl("/cancel"))
                 .andExpect(status().isOk());
     }
