@@ -74,17 +74,6 @@ public class BookingControllerIntegrationTest {
     }
 
     @Test
-    @Transactional
-    public void shouldNotCreateTicket_andRedirectToTicketCreatePage() throws Exception {
-        mockMvc.perform(post("/ticket/create")
-                .param("id", "1")
-                .param("eventId", "1")
-                .flashAttr("ticket", new Ticket()))
-                .andExpect(redirectedUrlPattern("/ticket/create*"))
-                .andExpect(status().is3xxRedirection());
-    }
-
-    @Test
     public void shouldReturnUser_givenUserId() throws Exception {
         final MvcResult mvcResult = mockMvc.perform(get("/user/1"))
                 .andExpect(status().isOk())

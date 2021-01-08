@@ -14,28 +14,11 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     @Transactional
-    public boolean createTicket(Ticket ticket) {
+    public Ticket saveTicket(Ticket ticket) {
         if (Objects.isNull(ticket)) {
             throw new IllegalArgumentException("The ticket object cannot be null.");
         }
-        return ticketRepository.createTicket(ticket);
-    }
-
-    @Override
-    public List<Ticket> getUnbookedTicketsForEvent(Long eventId) {
-        if (eventId < 1) {
-            throw new IllegalArgumentException("The event id cannot be below 1.");
-        }
-        return ticketRepository.getUnbookedTicketsForEvent(eventId);
-    }
-
-    @Override
-    @Transactional
-    public boolean updateTicket(Ticket ticket) {
-        if (Objects.isNull(ticket)) {
-            throw new IllegalArgumentException("The ticket object cannot be null.");
-        }
-        return ticketRepository.updateTicket(ticket);
+        return ticketRepository.save(ticket);
     }
 
     @Override
@@ -43,7 +26,7 @@ public class TicketServiceImpl implements TicketService {
         if (id < 1) {
             throw new IllegalArgumentException("The id cannot be below 1.");
         }
-        return ticketRepository.getTicket(id);
+        return ticketRepository.findById(id);
     }
 
     @Override
@@ -51,7 +34,7 @@ public class TicketServiceImpl implements TicketService {
         if (userId < 1) {
             throw new IllegalArgumentException("The user id cannot be below 1.");
         }
-        return ticketRepository.getBookedTicketsByUserId(userId);
+        return ticketRepository.findAllByUserIdAndBookedTrue(userId);
     }
 
     public void setTicketRepository(TicketRepository ticketRepository) {

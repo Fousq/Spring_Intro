@@ -17,12 +17,12 @@ Feature: booking facade scenarios
       | 3  | event_3 |
 
   Scenario Outline: Create ticket for event
-    Given Provide ticket "<id>" and event "<event_id>"
+    Given Provide ticket "<id>" and event with id "<event_id>" and name "<event_name>"
     When Need to create ticket
-    Then Create ticket with provided "<id>"
+    Then Check saved ticket
     Examples:
-      | id | event_id |
-      | 5  | 3        |
+      | id | event_id | event_name |
+      | 5  | 1        | event1    |
 
   Scenario Outline: Book ticket
     Given Provide user "<user_id>" and ticket "<ticket_id>"

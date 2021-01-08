@@ -61,12 +61,7 @@ public class BookingController {
 
     @PostMapping("/ticket/create")
     public String createTicket(@ModelAttribute("ticket") Ticket ticket, Model model) {
-        boolean isCreated = bookingFacade.createTicket(ticket);
-        if (!isCreated) {
-            model.addAttribute("errorMsg",
-                    "Cannot create ticket with id - " + ticket.getId() + ", event id - " + ticket.getEventId());
-            return "redirect:/ticket/create";
-        }
+        bookingFacade.saveTicket(ticket);
         return "redirect:/ticket/" + ticket.getId();
     }
 

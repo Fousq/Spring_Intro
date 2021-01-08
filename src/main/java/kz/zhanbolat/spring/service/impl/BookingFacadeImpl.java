@@ -42,8 +42,8 @@ public class BookingFacadeImpl implements BookingFacade {
     }
 
     @Override
-    public boolean createTicket(Ticket ticket) {
-        return ticketService.createTicket(ticket);
+    public Ticket saveTicket(Ticket ticket) {
+        return ticketService.saveTicket(ticket);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class BookingFacadeImpl implements BookingFacade {
         }
         ticket.get().setUser(user.get());
         ticket.get().setBooked(true);
-        ticketService.updateTicket(ticket.get());
+        ticketService.saveTicket(ticket.get());
         user.get().setBalance(user.get().getBalance().subtract(event.get().getTicketPrice()));
         userService.saveUser(user.get());
         return true;
@@ -107,7 +107,8 @@ public class BookingFacadeImpl implements BookingFacade {
         if (user.isPresent() && user.get().getId() == userId) {
             ticket.get().setUser(null);
             ticket.get().setBooked(false);
-            return ticketService.updateTicket(ticket.get());
+            ticketService.saveTicket(ticket.get());
+            return true;
         }
         return false;
     }
@@ -126,7 +127,7 @@ public class BookingFacadeImpl implements BookingFacade {
                 throw new BatchActionException("Cannot load tickets, because ticket - " + ticket + " is already loaded");
             }
         });
-        tickets.forEach(ticket -> ticketService.createTicket(ticket));
+        tickets.forEach(ticket -> ticketService.saveTicket(ticket));
     }
 
     @Override

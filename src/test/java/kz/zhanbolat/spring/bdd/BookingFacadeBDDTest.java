@@ -25,8 +25,9 @@ public class BookingFacadeBDDTest {
     private User user;
     private Event event;
     private Ticket ticket;
-    private Event createdEvent;
+    private Event savedEvent;
     private User savedUser;
+    private Ticket savedTicket;
     private boolean isCreated;
     private boolean isBooked;
     private boolean isCanceled;
@@ -53,33 +54,30 @@ public class BookingFacadeBDDTest {
 
     @When("Need to create event")
     public void needToCreateEvent() {
-        createdEvent = bookingFacade.saveEvent(event);
+        savedEvent = bookingFacade.saveEvent(event);
     }
 
     @Then("Check saved event")
     public void createEventWithProvidedIdAndName() {
-        assertEquals(event, createdEvent);
+        assertEquals(event, savedEvent);
     }
 
-    @Given("Provide ticket {string} and event {string}")
-    public void provideIdAndEventSId(String ticketId, String eventId) {
+    @Given("Provide ticket {string} and event with id {string} and name {string}")
+    public void provideIdAndEventSId(String ticketId, String eventId, String eventName) {
         ticket = Ticket.builder()
                 .setId(Long.parseLong(ticketId))
-                .setEvent(new Event(Long.parseLong(eventId), "event_3"))
+                .setEvent(new Event(Long.parseLong(eventId), eventName))
                 .build();
     }
 
     @When("Need to create ticket")
     public void needToCreateTicket() {
-        isCreated = bookingFacade.createTicket(ticket);
+        savedTicket = bookingFacade.saveTicket(ticket);
     }
 
-    @Then("Create ticket with provided {string}")
-    public void createTicketWithProvidedIdAndEventSId(String ticketId) {
-        assertTrue(isCreated);
-        final Optional<Ticket> createdTicket = bookingFacade.getTicket(Long.parseLong(ticketId));
-        assertTrue(createdTicket.isPresent());
-        assertEquals(ticket, createdTicket.get());
+    @Then("Check saved ticket")
+    public void createTicketWithProvidedIdAndEventSId() {
+        assertEquals(ticket, savedTicket);
     }
 
     @Given("Provide user {string} and ticket {string}")
